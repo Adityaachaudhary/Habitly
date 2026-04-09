@@ -1,17 +1,17 @@
 import { NavLink } from 'react-router-dom'
 import {
-  LayoutDashboard, BarChart2, Users, Settings,
-  Zap, ChevronLeft, ChevronRight, Sparkles
+  LayoutDashboard, BarChart2, Settings,
+  ChevronLeft, ChevronRight
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../utils/helpers'
 import { useAuth } from '../../context/AuthContext'
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { to: string; icon: any; label: string; premium?: boolean }[] = [
   { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/analytics', icon: BarChart2, label: 'Analytics' },
-  { to: '/ai-coach',  icon: Sparkles,        label: 'AI Coach',   premium: true },
-  { to: '/social',    icon: Users,           label: 'Social' },
+  // { to: '/ai-coach',  icon: Sparkles,        label: 'AI Coach',   premium: true },
+  // { to: '/social',    icon: Users,           label: 'Social' },
   { to: '/settings',  icon: Settings,        label: 'Settings' },
 ]
 
@@ -90,7 +90,7 @@ export default function Sidebar() {
         ))}
 
         {/* Premium */}
-        <NavLink
+        {/* <NavLink
           to="/premium"
           className={({ isActive }) =>
             `nav-link mt-4 px-4 py-3 rounded-xl transition-all duration-200 hover:translate-x-1 ${isActive ? 'active shadow-sm' : ''} ${collapsed ? 'justify-center border-t border-amber-100/20 pt-6' : ''}`
@@ -100,7 +100,7 @@ export default function Sidebar() {
         >
           <Zap size={20} className="flex-shrink-0 animate-pulse" />
           {!collapsed && <span className="font-bold tracking-tight">Premium</span>}
-        </NavLink>
+        </NavLink> */}
       </nav>
     </aside>
   )

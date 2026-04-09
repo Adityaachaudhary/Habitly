@@ -1,13 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, CheckCircle2, Circle, TrendingUp, BookOpenCheck } from 'lucide-react'
 import { useHabits } from '../context/HabitsContext'
 import { useAuth } from '../context/AuthContext'
 import HabitCard from '../components/HabitCard'
 import HabitForm from '../components/HabitForm'
-import AIInsightPanel from '../components/AIInsightPanel'
-import { useAIInsights } from '../hooks/useAIInsights'
-import { useHabitLogHistory } from '../hooks/useHabitLogHistory'
+// import AIInsightPanel from '../components/AIInsightPanel'
+// import { useAIInsights } from '../hooks/useAIInsights'
+// import { useHabitLogHistory } from '../hooks/useHabitLogHistory'
 import type { Habit, HabitWithStreak, TimeLane } from '../types'
 import { TIME_LANE_LABELS, TIME_LANE_ORDER } from '../types'
 import { getGreeting } from '../utils/helpers'
@@ -22,22 +22,22 @@ export default function DashboardPage() {
   const [showForm, setShowForm] = useState(false)
   const [editingHabit, setEditingHabit] = useState<HabitWithStreak | null>(null)
 
-  const habitsLogSyncKey = useMemo(
-    () =>
-      habits
-        .map(h => `${h.id}:${h.completed_today ? 1 : 0}:${h.streak?.current_streak ?? 0}`)
-        .join('|'),
-    [habits]
-  )
-  const { logs: historyLogs, loading: historyLogsLoading } = useHabitLogHistory(
-    user?.id,
-    40,
-    habitsLogSyncKey
-  )
-  const { dailyInsight, getDailyInsight } = useAIInsights(habits, {
-    logs: historyLogs,
-    loading: historyLogsLoading,
-  })
+  // const habitsLogSyncKey = useMemo(
+  //   () =>
+  //     habits
+  //       .map(h => `${h.id}:${h.completed_today ? 1 : 0}:${h.streak?.current_streak ?? 0}`)
+  //       .join('|'),
+  //   [habits]
+  // )
+  // const { logs: historyLogs, loading: historyLogsLoading } = useHabitLogHistory(
+  //   user?.id,
+  //   40,
+  //   habitsLogSyncKey
+  // )
+  // const { dailyInsight, getDailyInsight } = useAIInsights(habits, {
+  //   logs: historyLogs,
+  //   loading: historyLogsLoading,
+  // })
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
   const completed = habits.filter(h => h.completed_today).length
@@ -186,11 +186,11 @@ export default function DashboardPage() {
       </div>
 
       {/* AI Insight Panel */}
-      <AIInsightPanel
+      {/* <AIInsightPanel
         insight={dailyInsight}
         onGenerate={getDailyInsight}
         isPremium={user?.is_premium}
-      />
+      /> */}
 
       {/* Top streaks */}
       {topStreaks.length > 0 && (

@@ -9,10 +9,10 @@ import AppLayout from './components/common/AppLayout'
 import HomePage from './pages/HomePage'
 import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
-import SocialPage from './pages/SocialPage'
+// import SocialPage from './pages/SocialPage'
 import SettingsPage from './pages/SettingsPage'
-import PremiumPage from './pages/PremiumPage'
-import AICoachPage from './pages/AICoachPage'
+// import PremiumPage from './pages/PremiumPage'
+// import AICoachPage from './pages/AICoachPage'
 
 function AppLayoutWithAchievements() {
   const { toastQueue, dismissToast } = useAchievements()
@@ -51,7 +51,24 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   const { user, loading } = useAuth()
-  if (loading) return null
+  
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen" style={{ background: 'var(--bg)' }}>
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-2xl bg-primary-500 flex items-center justify-center">
+            <span className="text-white font-bold text-lg">H</span>
+          </div>
+          <div className="flex gap-1.5">
+            {[0, 1, 2].map(i => (
+              <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} />
@@ -68,10 +85,10 @@ function AppRoutes() {
       }>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/analytics"  element={<AnalyticsPage />} />
-        <Route path="/social"     element={<SocialPage />} />
+        {/* <Route path="/social"     element={<SocialPage />} /> */}
         <Route path="/settings"   element={<SettingsPage />} />
-        <Route path="/premium"    element={<PremiumPage />} />
-        <Route path="/ai-coach"   element={<AICoachPage />} />
+        {/* <Route path="/premium"    element={<PremiumPage />} /> */}
+        {/* <Route path="/ai-coach"   element={<AICoachPage />} /> */}
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
