@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { ReactNode } from 'react'
 import { supabase } from '../utils/supabase'
 import type { Habit, HabitLog, HabitStreak, HabitWithStreak } from '../types'
-import { getTodayString } from '../utils/helpers'
+import { getTodayString, localDateString } from '../utils/helpers'
 import { normalizeHabitBehaviorFields } from '../utils/behaviorDesign'
 import { useAuth } from './AuthContext'
 
@@ -115,7 +115,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       if (isMock) {
         const newHabit: Habit = {
           ...habitData,
-          id: Math.random().toString(36).substr(2, 9),
+          id: Math.random().toString(36).slice(2, 11),
           user_id: user.id,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
@@ -126,7 +126,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         // Init streak row
         const streaks = getLocal<HabitStreak>(STORAGE_STREAKS)
         saveLocal(STORAGE_STREAKS, [...streaks, {
-          id: Math.random().toString(36).substr(2, 9),
+          id: Math.random().toString(36).slice(2, 11),
           habit_id: newHabit.id,
           user_id: user.id,
           current_streak: 0,
@@ -214,7 +214,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
           saveLocal(STORAGE_LOGS, updated)
         } else {
           saveLocal(STORAGE_LOGS, [...logs, {
-            id: Math.random().toString(36).substr(2, 9),
+            id: Math.random().toString(36).slice(2, 11),
             habit_id: habitId,
             user_id: user.id,
             log_date: today,
@@ -264,25 +264,28 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
       if (!logs) return
 
-      let currentStreak = 0
-      let longestStreak = 0
-      let tempStreak = 0
-      let lastCompleted: string | null = null
+      const completedDates = new Set(
+        logs.filter(l => l.completed).map(l => l.log_date)
+      )
 
-      // Current streak: count consecutive completed from today backwards
-      const today = new Date()
-      for (let i = 0; i < logs.length; i++) {
-        const logDate = new Date(logs[i].log_date)
-        const diffDays = Math.floor((today.getTime() - logDate.getTime()) / (1000 * 60 * 60 * 24))
-        if (logs[i].completed && diffDays <= i + 1) { // Allowing for today or yesterday
-          currentStreak++
-          if (!lastCompleted) lastCompleted = logs[i].log_date
-        } else if (diffDays > i + 1) {
-          break
-        }
+      // Current streak: walk backwards day-by-day from today using local date strings
+      // Allow streak to begin from yesterday if today not yet checked in
+      let currentStreak = 0
+      let lastCompleted: string | null = null
+      const todayStr = getTodayString()
+      const startOffset = completedDates.has(todayStr) ? 0 : 1
+      for (let i = startOffset; i < 400; i++) {
+        const d = new Date()
+        d.setDate(d.getDate() - i)
+        const dateStr = localDateString(d)
+        if (!completedDates.has(dateStr)) break
+        currentStreak++
+        if (!lastCompleted) lastCompleted = dateStr
       }
 
-      // Longest streak
+      // Longest streak: iterate sorted ascending logs
+      let longestStreak = 0
+      let tempStreak = 0
       const sortedLogs = [...logs].sort((a, b) => a.log_date.localeCompare(b.log_date))
       for (const log of sortedLogs) {
         if (log.completed) {
@@ -308,7 +311,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
           streaks[existingIdx] = { ...streaks[existingIdx], ...newStreak }
           saveLocal(STORAGE_STREAKS, streaks)
         } else {
-          saveLocal(STORAGE_STREAKS, [...streaks, { ...newStreak, id: Math.random().toString(36).substr(2, 9) }])
+          saveLocal(STORAGE_STREAKS, [...streaks, { ...newStreak, id: Math.random().toString(36).slice(2, 11) }])
         }
       } else {
         await supabase.from('habit_streaks').upsert({

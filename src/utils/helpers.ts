@@ -11,7 +11,7 @@ export function getTodayString(): string {
 }
 
 export function getDateString(date: Date): string {
-  return date.toISOString().split('T')[0]
+  return localDateString(date)
 }
 
 export function formatDate(dateStr: string): string {

@@ -9,14 +9,16 @@ interface AuthContextType {
   signUp: (email: string, password: string, fullName: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
+  updateUser: (updates: Partial<User>) => void
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
-  signUp: async () => {},
-  signIn: async () => {},
-  signOut: async () => {},
+  signUp: async () => { },
+  signIn: async () => { },
+  signOut: async () => { },
+  updateUser: () => { },
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -58,12 +60,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false)
       }
     }).catch((e) => {
-      console.error('Session fetch failed', e)
+      console.error('Session fetch failed:', e instanceof Error ? e.message : 'unknown error')
       setLoading(false)
     })
 
     // Listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
       if (session?.user) {
         await fetchUser(session.user.id)
       } else {
@@ -83,40 +85,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Set a local timeout for this specific database call
       const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('DB Timeout')), 5000))
       const fetchPromise = supabase.from('users').select('*').eq('id', userId).single()
-      
-      const { data, error } = (await Promise.race([fetchPromise, timeoutPromise])) as any
-      
+
+      const response = (await Promise.race([fetchPromise, timeoutPromise])) as any
+      const data = response.data
+      const error = response.error
+
       // If no profile exists yet, let's heal it by creating one
       if (error || !data) {
+        // Only try healing if we have a valid auth session
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
-          // Pull name from metadata if available
           const metaName = session.user.user_metadata?.full_name || ''
-          
           const { data: newProfile, error: upsertError } = await supabase.from('users').upsert({
             id: userId,
             email: session.user.email,
             full_name: metaName,
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           }).select().single()
-          
+
           if (!upsertError && newProfile) {
             setUser(newProfile as User)
             return
           }
         }
       }
-      
+
       if (data) {
         setUser(data as User)
-      } else {
-        setUser(null)
       }
+      // Note: We deliberately DO NOT set user to null here if fetch fails. 
+      // We rely on the auth listener (onAuthStateChange) to handle actual sign-out events.
     } catch (err) {
-      setUser(null)
+      console.warn('Profile fetch hiccup (still logged in):', err instanceof Error ? err.message : 'unknown error')
     } finally {
       setLoading(false)
     }
+  }
+
+  function updateUser(updates: Partial<User>) {
+    setUser(prev => prev ? { ...prev, ...updates } : prev)
   }
 
   async function signUp(email: string, password: string, fullName: string) {
@@ -132,14 +139,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       return
     }
-    const { data: { user: authUser }, error } = await supabase.auth.signUp({ 
-      email, 
+    const { data: { user: authUser }, error } = await supabase.auth.signUp({
+      email,
       password,
       options: {
         data: { full_name: fullName }
       }
     })
-    
+
     if (error) throw error
 
     // Directly save the profile to ensure the name is captured immediately 
@@ -185,7 +192,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

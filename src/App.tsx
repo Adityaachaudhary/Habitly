@@ -24,50 +24,33 @@ function AppLayoutWithAchievements() {
   )
 }
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth()
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen" style={{ background: 'var(--bg)' }}>
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-2xl bg-primary-500 flex items-center justify-center">
-            <span className="text-white font-bold text-lg">H</span>
-          </div>
-          <div className="flex gap-1.5">
-            {[0,1,2].map(i => (
-              <div key={i} className="w-2 h-2 rounded-full" style={{
-                background: '#4ade80',
-                animation: `bounce 1s ease-in-out ${i*0.15}s infinite`,
-              }} />
-            ))}
-          </div>
+function LoadingScreen() {
+  return (
+    <div className="flex items-center justify-center h-screen" style={{ background: 'var(--bg)' }}>
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 rounded-2xl bg-primary-500 flex items-center justify-center">
+          <span className="text-white font-bold text-lg">H</span>
+        </div>
+        <div className="flex gap-1.5">
+          {[0, 1, 2].map(i => (
+            <div key={i} className="w-2 h-2 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+          ))}
         </div>
       </div>
-    )
-  }
+    </div>
+  )
+}
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth()
+  if (loading) return <LoadingScreen />
   if (!user) return <Navigate to="/" replace />
   return <>{children}</>
 }
 
 function AppRoutes() {
   const { user, loading } = useAuth()
-  
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen" style={{ background: 'var(--bg)' }}>
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-2xl bg-primary-500 flex items-center justify-center">
-            <span className="text-white font-bold text-lg">H</span>
-          </div>
-          <div className="flex gap-1.5">
-            {[0, 1, 2].map(i => (
-              <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-            ))}
-          </div>
-        </div>
-      </div>
-    )
-  }
+  if (loading) return <LoadingScreen />
 
   return (
     <Routes>

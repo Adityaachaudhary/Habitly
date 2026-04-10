@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Plus, CheckCircle2, Circle, TrendingUp, BookOpenCheck } from 'lucide-react'
+import { Plus, CheckCircle2, Circle, TrendingUp } from 'lucide-react'
 import { useHabits } from '../context/HabitsContext'
 import { useAuth } from '../context/AuthContext'
 import HabitCard from '../components/HabitCard'
@@ -76,8 +75,7 @@ export default function DashboardPage() {
 
   const thisWeekMonday = getWeekMondayIso()
   const hasWeekReview = Boolean(getReviewForWeek(thisWeekMonday))
-  const showWeekReviewNudge =
-    !weekReviewLoading && !hasWeekReview && isEndOfWeekNudgeDay()
+  // const showWeekReviewNudge = !weekReviewLoading && !hasWeekReview && isEndOfWeekNudgeDay()
 
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-8 animate-fade-in">
@@ -95,7 +93,7 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {showWeekReviewNudge && (
+      {/* {showWeekReviewNudge && (
         <Link
           to="/analytics?tab=reflection"
           className="flex items-center gap-4 p-4 rounded-2xl border transition-all hover:shadow-md"
@@ -122,7 +120,7 @@ export default function DashboardPage() {
             Open →
           </span>
         </Link>
-      )}
+      )} */}
 
       {/* Today's progress card */}
       <div className="glass-card p-8 relative overflow-hidden group">

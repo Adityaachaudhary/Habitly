@@ -6,10 +6,10 @@ import {
 } from 'recharts'
 import { useHabits } from '../context/HabitsContext'
 import { useAuth } from '../context/AuthContext'
-import { supabase } from '../utils/supabase'
-import { getLast30Days, getWeekDayLabel, calculateCompletionRate } from '../utils/helpers'
+import { getLast30Days, getWeekDayLabel, calculateCompletionRate, localDateString } from '../utils/helpers'
+import { fetchHabitLogsForUser } from '../utils/fetchHabitLogs'
 import { CATEGORIES } from '../types'
-import WeekReviewPanel from '../components/WeekReviewPanel'
+
 
 interface DayData { date: string; rate: number; label: string }
 interface HabitStat { name: string; rate: number; color: string; streak: number }
@@ -29,20 +29,24 @@ export default function AnalyticsPage() {
     }
   }, [searchParams, setSearchParams])
 
+  const isMock =
+    import.meta.env.VITE_SUPABASE_URL === undefined ||
+    import.meta.env.VITE_SUPABASE_URL.includes('placeholder')
+
   useEffect(() => {
     if (!user) return
     async function fetchLogs() {
-      const start = new Date(); start.setDate(start.getDate() - 90)
-      const { data } = await supabase
-        .from('habit_logs')
-        .select('habit_id, log_date, completed')
-        .eq('user_id', user!.id)
-        .gte('log_date', start.toISOString().split('T')[0])
-      setLogs(data || [])
-      setLoading(false)
+      try {
+        const data = await fetchHabitLogsForUser(user!.id, 90, isMock)
+        setLogs(data)
+      } catch {
+        setLogs([])
+      } finally {
+        setLoading(false)
+      }
     }
     fetchLogs()
-  }, [user])
+  }, [user, isMock])
 
   const last30 = getLast30Days()
 
@@ -94,7 +98,7 @@ export default function AnalyticsPage() {
       for (let d = 6; d >= 0; d--) {
         const day = new Date(today)
         day.setDate(today.getDate() - w * 7 - d)
-        const dateStr = day.toISOString().split('T')[0]
+        const dateStr = localDateString(day)
         const dayLogs = logs.filter(l => l.log_date === dateStr)
         const rate = habits.length > 0
           ? dayLogs.filter(l => l.completed).length / habits.length
@@ -116,8 +120,8 @@ export default function AnalyticsPage() {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
-    { id: 'heatmap',  label: 'Heatmap' },
-    { id: 'habits',   label: 'Per Habit' },
+    { id: 'heatmap', label: 'Heatmap' },
+    { id: 'habits', label: 'Per Habit' },
     { id: 'reflection', label: 'Reflection' },
   ] as const
 
@@ -134,9 +138,9 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Completion Rate', value: `${overallRate}%`, sub: 'last 30 days', emoji: '🎯' },
-          { label: 'Active Streaks',  value: activeStreaks, sub: 'habits on streak', emoji: '🔥' },
-          { label: 'Best Streak',     value: `${bestStreak}d`, sub: 'all time', emoji: '🏆' },
-          { label: 'Total Habits',    value: habits.length, sub: 'being tracked', emoji: '📋' },
+          { label: 'Active Streaks', value: activeStreaks, sub: 'habits on streak', emoji: '🔥' },
+          { label: 'Best Streak', value: `${bestStreak}d`, sub: 'all time', emoji: '🏆' },
+          { label: 'Total Habits', value: habits.length, sub: 'being tracked', emoji: '📋' },
         ].map(({ label, value, sub, emoji }) => (
           <div key={label} className="card p-4">
             <div className="text-2xl mb-2">{emoji}</div>
@@ -261,7 +265,18 @@ export default function AnalyticsPage() {
       )}
 
       {/* Week review / trends */}
-      {activeTab === 'reflection' && <WeekReviewPanel />}
+      {activeTab === 'reflection' && (
+        <div className="animate-slide-up card p-12 text-center">
+          <div className="text-5xl mb-4">📓</div>
+          <h3 className="font-display font-bold text-lg mb-2" style={{ color: 'var(--text)' }}>Weekly Reflection</h3>
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>
+            Deep week-in-review insights and journaling are coming soon to Habitly!
+          </p>
+          <span className="mt-4 inline-block text-xs px-3 py-1 rounded-full font-medium" style={{ background: '#fffbeb', color: '#d97706' }}>
+            Coming soon
+          </span>
+        </div>
+      )}
 
       {/* Per habit tab */}
       {activeTab === 'habits' && (

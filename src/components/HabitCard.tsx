@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { MoreVertical, Pencil, Trash2, Check } from 'lucide-react'
 import type { HabitWithStreak } from '../types'
 import { cn } from '../utils/helpers'
@@ -16,6 +16,18 @@ interface HabitCardProps {
 export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, onDelete }: HabitCardProps) {
   const [toggling, setToggling] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function handleClick(e: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [menuOpen])
   const [justChecked, setJustChecked] = useState(false)
 
   const streak = habit.streak?.current_streak || 0
@@ -103,7 +115,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
         </div>
 
         {/* Menu */}
-        <div className="relative">
+        <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(o => !o)}
             className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
@@ -114,7 +126,6 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
           {menuOpen && (
             <div
               className="absolute right-0 top-6 z-20 w-32 card shadow-hover py-1 animate-bounce-in"
-              onBlur={() => setMenuOpen(false)}
             >
               <button
                 onClick={() => { onEdit(habit); setMenuOpen(false) }}

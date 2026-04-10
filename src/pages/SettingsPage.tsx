@@ -7,21 +7,29 @@ import { useTheme } from '../context/ThemeContext'
 import { supabase } from '../utils/supabase'
 
 export default function SettingsPage() {
-  const { user, signOut } = useAuth()
+  const { user, signOut, updateUser } = useAuth()
   const { achievements, loading: achievementsLoading } = useAchievements()
   const { theme, toggleTheme } = useTheme()
   const [name, setName] = useState(user?.full_name || '')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
 
+  const [saveError, setSaveError] = useState('')
+
   async function handleSaveName(e: React.FormEvent) {
     e.preventDefault()
     if (!user) return
     setSaving(true)
-    await supabase.from('users').update({ full_name: name }).eq('id', user.id)
+    setSaveError('')
+    const { error } = await supabase.from('users').update({ full_name: name }).eq('id', user.id)
     setSaving(false)
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    if (error) {
+      setSaveError('Failed to save. Please try again.')
+    } else {
+      updateUser({ full_name: name })
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2000)
+    }
   }
 
   const sections = [
@@ -55,6 +63,9 @@ export default function SettingsPage() {
           <button type="submit" disabled={saving} className="btn-primary">
             {saved ? '✓ Saved' : saving ? 'Saving...' : 'Save changes'}
           </button>
+          {saveError && (
+            <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{saveError}</p>
+          )}
         </form>
       ),
     },

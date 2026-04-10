@@ -27,12 +27,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
     setError('')
+    if (mode === 'signup') {
+      if (!form.name.trim()) { setError('Name is required'); return }
+      if (form.password.length < 6) { setError('Password must be at least 6 characters'); return }
+    }
+    setLoading(true)
     try {
       if (mode === 'signup') {
-        if (!form.name.trim()) { setError('Name is required'); return }
-        if (form.password.length < 6) { setError('Password must be at least 6 characters'); return }
         await signUp(form.email, form.password, form.name)
       } else {
         await signIn(form.email, form.password)
