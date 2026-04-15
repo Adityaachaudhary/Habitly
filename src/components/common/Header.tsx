@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogOut, ChevronDown, Sun, Moon } from 'lucide-react'
+import { LogOut, ChevronDown, Sun, Moon, Menu } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import { cn } from '../../utils/helpers'
 
-export default function Header() {
+interface HeaderProps {
+  onOpenMobileNav?: () => void
+}
+
+export default function Header({ onOpenMobileNav }: HeaderProps) {
   const { user, signOut } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
@@ -17,19 +21,29 @@ export default function Header() {
   }
 
   return (
-    <header className="h-14 border-b flex items-center justify-end px-6 gap-4 bg-glass-bg backdrop-blur-3xl relative z-[100]" style={{ borderColor: 'var(--glass-border)' }}>
-      {/* Theme toggle */}
+    <header className="h-14 border-b flex items-center justify-between px-4 sm:px-6 gap-3 sm:gap-4 bg-glass-bg backdrop-blur-3xl relative z-[100]" style={{ borderColor: 'var(--glass-border)' }}>
       <button
-        onClick={toggleTheme}
-        className="btn-ghost p-2 rounded-xl transition-all active:scale-90 hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center h-10 w-10"
-        title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+        type="button"
+        onClick={onOpenMobileNav}
+        className="md:hidden btn-ghost p-2 rounded-xl transition-all active:scale-90 flex items-center justify-center h-10 w-10"
+        title="Open navigation"
         style={{ color: 'var(--text)' }}
       >
-        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        <Menu size={20} />
       </button>
+      <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="btn-ghost p-2 rounded-xl transition-all active:scale-90 hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center h-10 w-10"
+          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          style={{ color: 'var(--text)' }}
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
 
-      {/* User profile with dropdown */}
-      {user && (
+        {/* User profile with dropdown */}
+        {user && (
         <div className="relative">
           <button 
             onClick={() => setShowMenu(!showMenu)}
@@ -78,6 +92,7 @@ export default function Header() {
           )}
         </div>
       )}
+      </div>
     </header>
   )
 }

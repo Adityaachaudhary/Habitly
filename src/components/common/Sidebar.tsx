@@ -15,7 +15,12 @@ const NAV_ITEMS: { to: string; icon: any; label: string; premium?: boolean }[] =
   { to: '/settings',  icon: Settings,        label: 'Settings' },
 ]
 
-export default function Sidebar() {
+interface SidebarProps {
+  mobileOpen?: boolean
+  onCloseMobile?: () => void
+}
+
+export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false)
   const { user } = useAuth()
   
@@ -23,16 +28,29 @@ export default function Sidebar() {
   const filteredNav = NAV_ITEMS.filter(item => !item.premium || canAccessAI)
 
   return (
-    <aside
-      className="relative flex flex-col h-full transition-all duration-300 z-20"
-      style={{
-        width: collapsed ? '72px' : '224px',
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(24px)',
-        borderRight: '1px solid var(--glass-border)',
-        flexShrink: 0,
-      }}
-    >
+    <>
+      {/* Mobile backdrop */}
+      {mobileOpen && (
+        <button
+          type="button"
+          onClick={onCloseMobile}
+          className="md:hidden fixed inset-0 z-[140] bg-black/35 backdrop-blur-[1px]"
+          aria-label="Close navigation"
+        />
+      )}
+      <aside
+        className={cn(
+          'fixed md:relative top-0 left-0 flex flex-col h-full transition-all duration-300 z-[150] md:z-20',
+          mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        )}
+        style={{
+          width: collapsed ? '72px' : '224px',
+          background: 'var(--glass-bg)',
+          backdropFilter: 'blur(24px)',
+          borderRight: '1px solid var(--glass-border)',
+          flexShrink: 0,
+        }}
+      >
 
       {/* Logo */}
       <div 
@@ -79,6 +97,7 @@ export default function Sidebar() {
           <NavLink
             key={to}
             to={to}
+            onClick={onCloseMobile}
             className={({ isActive }) =>
               `nav-link px-4 py-3 rounded-xl transition-all duration-200 hover:translate-x-1 ${isActive ? 'active shadow-sm' : ''} ${collapsed ? 'justify-center' : ''}`
             }
@@ -102,6 +121,7 @@ export default function Sidebar() {
           {!collapsed && <span className="font-bold tracking-tight">Premium</span>}
         </NavLink> */}
       </nav>
-    </aside>
+      </aside>
+    </>
   )
 }

@@ -47,7 +47,6 @@ async function loadAchievements(userId: string, isMock: boolean): Promise<Achiev
     .eq('user_id', userId)
     .order('unlocked_at', { ascending: false })
   if (error) {
-    console.warn('loadAchievements error:', String(error.message))
     return []
   }
   return (data as Achievement[]) || []
@@ -83,7 +82,7 @@ async function persistUnlock(
     badge_type: unlock.badge_type,
     habit_id: unlock.habit_id,
   })
-  if (error) console.warn('persistUnlock error:', String(error.message))
+  if (error) return
 }
 
 export function AchievementsProvider({ children }: { children: ReactNode }) {

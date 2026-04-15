@@ -95,8 +95,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
       setHabits(enriched)
       setTodayLogs(logsData || [])
-    } catch (err) {
-      console.warn('Supabase fetch failed, likely missing keys:', err)
+    } catch (_err) {
       setHabits([])
       setTodayLogs([])
     } finally {
@@ -151,7 +150,6 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       }
       await refreshHabits()
     } catch (err) {
-      console.error('Failed to create habit:', err)
       throw err
     }
   }
@@ -168,7 +166,6 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       }
       await refreshHabits()
     } catch (err) {
-      console.error('Failed to update habit:', err)
       throw err
     }
   }
@@ -195,7 +192,6 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       }
       await refreshHabits()
     } catch (err) {
-      console.error('Failed to delete habit:', err)
       throw err
     }
   }
@@ -239,8 +235,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       // Recalculate streak
       await recalcStreak(habitId)
       await refreshHabits()
-    } catch (err) {
-      console.error('Failed to toggle habit:', err)
+    } catch (_err) {
     }
   }
 
@@ -323,8 +318,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
           updated_at: new Date().toISOString(),
         }, { onConflict: 'habit_id' })
       }
-    } catch (err) {
-      console.error('Failed to recalc streak:', err)
+    } catch (_err) {
     }
   }
 

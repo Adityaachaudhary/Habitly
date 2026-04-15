@@ -7,7 +7,7 @@ import { useTheme } from '../context/ThemeContext'
 import { supabase } from '../utils/supabase'
 
 export default function SettingsPage() {
-  const { user, signOut, updateUser } = useAuth()
+  const { user, signOut, updateUser, updatePassword, deleteAccount, isRecoveryMode, setRecoveryMode } = useAuth()
   const { achievements, loading: achievementsLoading } = useAchievements()
   const { theme, toggleTheme } = useTheme()
   const [name, setName] = useState(user?.full_name || '')
@@ -15,6 +15,12 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false)
 
   const [saveError, setSaveError] = useState('')
+  const [passwordForm, setPasswordForm] = useState({ current: '', next: '', confirm: '' })
+  const [passwordLoading, setPasswordLoading] = useState(false)
+  const [passwordMessage, setPasswordMessage] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   async function handleSaveName(e: React.FormEvent) {
     e.preventDefault()
@@ -29,6 +35,44 @@ export default function SettingsPage() {
       updateUser({ full_name: name })
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
+    }
+  }
+
+  async function handlePasswordChange(e: React.FormEvent) {
+    e.preventDefault()
+    setPasswordMessage('')
+    setPasswordError('')
+    if (passwordForm.next.length < 6) {
+      setPasswordError('New password must be at least 6 characters.')
+      return
+    }
+    if (passwordForm.next !== passwordForm.confirm) {
+      setPasswordError('New password and confirmation do not match.')
+      return
+    }
+    setPasswordLoading(true)
+    try {
+      await updatePassword(passwordForm.next)
+      setPasswordMessage('Password updated successfully.')
+      setPasswordForm({ current: '', next: '', confirm: '' })
+      if (isRecoveryMode) setRecoveryMode(false)
+    } catch (err: any) {
+      setPasswordError(err?.message || 'Could not update password.')
+    } finally {
+      setPasswordLoading(false)
+    }
+  }
+
+  async function handleDeleteAccount() {
+    const ok = confirm('Delete your account and all data permanently? This cannot be undone.')
+    if (!ok) return
+    setDeleteLoading(true)
+    setDeleteError('')
+    try {
+      await deleteAccount()
+    } catch (err: any) {
+      setDeleteError(err?.message || 'Account deletion failed. Please try again.')
+      setDeleteLoading(false)
     }
   }
 
@@ -95,6 +139,68 @@ export default function SettingsPage() {
       ),
     },
     {
+      id: 'security-section',
+      icon: <Shield size={18} />, title: 'Security',
+      content: (
+        <form onSubmit={handlePasswordChange} className="space-y-3">
+          <p className="text-sm" style={{ color: 'var(--muted)' }}>
+            {isRecoveryMode ? 'Setup your new secure password.' : 'Change your account password.'}
+          </p>
+          {!isRecoveryMode && (
+            <div>
+              <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+                Current Password (for your reference)
+              </label>
+              <input
+                type="password"
+                value={passwordForm.current}
+                onChange={e => setPasswordForm(f => ({ ...f, current: e.target.value }))}
+                className="input"
+                placeholder="Current password"
+              />
+            </div>
+          )}
+          <div>
+            <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              New Password
+            </label>
+            <input
+              type="password"
+              value={passwordForm.next}
+              onChange={e => setPasswordForm(f => ({ ...f, next: e.target.value }))}
+              className="input"
+              placeholder="New password (min 6 chars)"
+              minLength={6}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              Confirm New Password
+            </label>
+            <input
+              type="password"
+              value={passwordForm.confirm}
+              onChange={e => setPasswordForm(f => ({ ...f, confirm: e.target.value }))}
+              className="input"
+              placeholder="Re-enter new password"
+              minLength={6}
+              required
+            />
+          </div>
+          <button type="submit" disabled={passwordLoading} className="btn-primary">
+            {passwordLoading ? 'Updating...' : 'Change password'}
+          </button>
+          {passwordMessage && (
+            <p className="text-xs mt-1" style={{ color: '#16a34a' }}>{passwordMessage}</p>
+          )}
+          {passwordError && (
+            <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{passwordError}</p>
+          )}
+        </form>
+      ),
+    },
+    {
       icon: <Shield size={18} />, title: 'Appearance',
       content: (
         <div className="flex items-center justify-between">
@@ -141,13 +247,17 @@ export default function SettingsPage() {
               Sign out
             </button>
             <button
-              onClick={() => confirm('Delete all your data? This cannot be undone.') && alert('Contact support to delete your account.')}
+              onClick={handleDeleteAccount}
+              disabled={deleteLoading}
               className="text-sm font-medium px-4 py-2 rounded-xl border transition-all"
               style={{ borderColor: '#ef4444', color: '#ef4444' }}
             >
-              Delete account
+              {deleteLoading ? 'Deleting account...' : 'Delete account'}
             </button>
           </div>
+          {deleteError && (
+            <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{deleteError}</p>
+          )}
         </div>
       ),
     },
@@ -159,6 +269,28 @@ export default function SettingsPage() {
         <h1 className="font-display font-bold text-2xl" style={{ color: 'var(--text)' }}>Settings</h1>
         <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Manage your account and preferences</p>
       </div>
+      
+      {isRecoveryMode && (
+        <div className="p-5 rounded-2xl bg-primary-600 text-white shadow-xl shadow-primary-500/20 animate-bounce-in flex flex-col sm:flex-row items-center justify-between gap-4 border border-white/10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+               <Shield size={24} />
+            </div>
+            <div>
+              <p className="font-bold text-lg leading-tight">Secure your account</p>
+              <p className="text-sm opacity-90">Reset token accepted. Please set a new password now.</p>
+            </div>
+          </div>
+          <button 
+            onClick={() => {
+              document.getElementById('security-section')?.scrollIntoView({ behavior: 'smooth' })
+            }}
+            className="w-full sm:w-auto px-6 py-2.5 bg-white text-primary-600 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-md"
+          >
+            Set Password
+          </button>
+        </div>
+      )}
 
       {/* Unlocked badges */}
       <div className="card overflow-hidden">
@@ -239,8 +371,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Settings sections */}
-      {sections.map(({ icon, title, content }) => (
-        <div key={title} className="card overflow-hidden">
+      {sections.map(({ id, icon, title, content }) => (
+        <div key={title} id={id} className="card overflow-hidden">
           <div className="flex items-center gap-3 px-5 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
             <span style={{ color: 'var(--muted)' }}>{icon}</span>
             <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>{title}</h3>

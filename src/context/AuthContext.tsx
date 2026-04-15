@@ -8,8 +8,13 @@ interface AuthContextType {
   loading: boolean
   signUp: (email: string, password: string, fullName: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
+  resetPassword: (email: string) => Promise<void>
+  updatePassword: (newPassword: string) => Promise<void>
+  deleteAccount: () => Promise<void>
   signOut: () => Promise<void>
   updateUser: (updates: Partial<User>) => void
+  isRecoveryMode: boolean
+  setRecoveryMode: (val: boolean) => void
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,13 +22,19 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   signUp: async () => { },
   signIn: async () => { },
+  resetPassword: async () => { },
+  updatePassword: async () => { },
+  deleteAccount: async () => { },
   signOut: async () => { },
   updateUser: () => { },
+  isRecoveryMode: false,
+  setRecoveryMode: () => { },
 })
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false)
 
   const isMock = import.meta.env.VITE_SUPABASE_URL === undefined || import.meta.env.VITE_SUPABASE_URL.includes('placeholder')
 
@@ -31,7 +42,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Safety failsafe: never stay in loading state more than 8 seconds
     const safetyTimer = setTimeout(() => {
       if (loading) {
-        console.warn('Auth initialization taking too long, forcing loading to false')
         setLoading(false)
       }
     }, 8000)
@@ -60,17 +70,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false)
       }
     }).catch((e) => {
-      console.error('Session fetch failed:', e instanceof Error ? e.message : 'unknown error')
       setLoading(false)
     })
 
     // Listen for changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsRecoveryMode(true)
+      }
+      
       if (session?.user) {
         await fetchUser(session.user.id)
       } else {
         setUser(null)
         setLoading(false)
+        setIsRecoveryMode(false)
       }
     })
 
@@ -116,7 +130,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Note: We deliberately DO NOT set user to null here if fetch fails. 
       // We rely on the auth listener (onAuthStateChange) to handle actual sign-out events.
     } catch (err) {
-      console.warn('Profile fetch hiccup (still logged in):', err instanceof Error ? err.message : 'unknown error')
     } finally {
       setLoading(false)
     }
@@ -182,6 +195,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error
   }
 
+  async function resetPassword(email: string) {
+    if (isMock) return
+    const redirectTo = `${window.location.origin}/settings`
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo })
+    if (error) throw error
+  }
+
+  async function updatePassword(newPassword: string) {
+    if (isMock) return
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) throw error
+  }
+
+  async function deleteAccount() {
+    if (isMock) {
+      setUser(null)
+      return
+    }
+    const { error } = await supabase.rpc('delete_my_account')
+    if (error) throw error
+    await supabase.auth.signOut()
+    setUser(null)
+  }
+
   async function signOut() {
     if (isMock) {
       setUser(null)
@@ -192,7 +229,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signOut, updateUser }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        signUp,
+        signIn,
+        resetPassword,
+        updatePassword,
+        deleteAccount,
+        signOut,
+        updateUser,
+        isRecoveryMode,
+        setRecoveryMode: setIsRecoveryMode,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

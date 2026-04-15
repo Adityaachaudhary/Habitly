@@ -20,7 +20,6 @@ export async function fetchHabitLogsForUser(
     .eq('user_id', userId)
     .gte('log_date', startStr)
   if (error) {
-    console.warn('fetchHabitLogsForUser error:', String(error.message))
     return []
   }
   return (data as HabitLog[]) || []
