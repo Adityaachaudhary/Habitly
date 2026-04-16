@@ -65,7 +65,7 @@ export default function BadgeUnlockToast({ item, onDismiss }: BadgeUnlockToastPr
         <button
           type="button"
           onClick={onDismiss}
-          className="p-1 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 flex-shrink-0"
+          className="p-1 rounded-lg flex-shrink-0"
           aria-label="Dismiss"
         >
           <X size={16} style={{ color: 'var(--muted)' }} />

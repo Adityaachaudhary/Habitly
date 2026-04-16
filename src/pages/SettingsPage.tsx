@@ -285,7 +285,7 @@ export default function SettingsPage() {
             onClick={() => {
               document.getElementById('security-section')?.scrollIntoView({ behavior: 'smooth' })
             }}
-            className="w-full sm:w-auto px-6 py-2.5 bg-white text-primary-600 rounded-xl font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-md"
+            className="w-full sm:w-auto px-6 py-2.5 bg-white text-primary-600 rounded-xl font-bold text-sm active:scale-95 transition-all shadow-md"
           >
             Set Password
           </button>

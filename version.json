@@ -1,0 +1,32 @@
+[
+  {
+    "version": "1.0.3",
+    "date": "2026-04-15",
+    "categories": {
+      "fixes": [
+        "Adjusted theme toggle alignment in Header. Moved inside a grouped flex container with Profile Dropdown to prevent shifting to the center on large screens.",
+        "Fixed Sidebar layering issue on mobile. Increased z-index of aside and backdrop elements so they correctly overlay the navigation bar."
+      ],
+      "updates": [
+        "Implemented full Password Reset & Recovery flow. Added state listener in AuthContext and success banner in SettingsPage.",
+        "Implemented secure account deletion via Supabase RPC (delete_my_account). Replaced placeholder contact alert with functional database execution.",
+        "Performed pre-launch log sanitization and code polish across contexts and pages."
+      ]
+    }
+  },
+  {
+    "version": "1.0.4",
+    "date": "2026-04-16",
+    "categories": {
+      "fixes": [
+        "Updated page title and SEO meta description in index.html for better brand visibility.",
+        "Verified and cleaned up core landing page assets to ensure no broken images on launch."
+      ],
+      "updates": [
+        "Performed a comprehensive pre-launch MVP audit covering security (RLS), performance, and mobile responsiveness.",
+        "Validated all habit check-in/streak calculation logic for local timezone accuracy.",
+        "Optimized app routing to prevent flashes of unstyled content during session hydration."
+      ]
+    }
+  }
+]

@@ -42,7 +42,7 @@ export default function AIInsightPanel({ insight, onGenerate, isPremium = false 
           disabled={loading}
           className={cn(
             'flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all',
-            loading ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-80 active:scale-95'
+            loading ? 'opacity-60 cursor-not-allowed' : 'active:scale-95'
           )}
           style={{ background: '#8b5cf6', color: 'white' }}
         >

@@ -82,7 +82,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
       >
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 p-2 rounded-xl transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="absolute right-4 top-4 p-2 rounded-xl transition-all"
           style={{ color: 'var(--muted)' }}
         >
           <X size={20} />
@@ -186,7 +186,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 <button
                   type="button"
                   onClick={() => { setMode('forgot_password'); setError(''); setNotice('') }}
-                  className="text-xs font-semibold text-primary-600 hover:underline"
+                  className="text-xs font-semibold text-primary-600"
                 >
                   Forgot password?
                 </button>
@@ -233,7 +233,7 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 setError('')
                 setNotice('')
               }}
-              className="font-bold underline text-primary-600 hover:text-primary-700 hover:scale-105 transition-transform"
+              className="font-bold underline text-primary-600 transition-transform"
             >
               {mode === 'login' ? 'Sign up free' : 'Sign in here'}
             </button>

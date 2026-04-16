@@ -35,7 +35,7 @@ export default function Header({ onOpenMobileNav }: HeaderProps) {
         {/* Theme toggle */}
         <button
           onClick={toggleTheme}
-          className="btn-ghost p-2 rounded-xl transition-all active:scale-90 hover:bg-black/5 dark:hover:bg-white/5 flex items-center justify-center h-10 w-10"
+          className="btn-ghost p-2 rounded-xl transition-all active:scale-90 flex items-center justify-center h-10 w-10"
           title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
           style={{ color: 'var(--text)' }}
         >
@@ -47,7 +47,7 @@ export default function Header({ onOpenMobileNav }: HeaderProps) {
         <div className="relative">
           <button 
             onClick={() => setShowMenu(!showMenu)}
-            className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border bg-black/5 dark:bg-white/5 transition-all hover:bg-black/10 dark:hover:bg-white/10" 
+            className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border bg-black/5 dark:bg-white/5 transition-all" 
             style={{ borderColor: 'var(--glass-border)' }}
           >
             <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 text-xs font-black shadow-sm border-2 border-primary-500">
@@ -82,7 +82,7 @@ export default function Header({ onOpenMobileNav }: HeaderProps) {
                 
                 <button
                   onClick={handleSignOut}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm font-bold text-red-500 transition-colors"
                 >
                   <LogOut size={16} />
                   Sign out

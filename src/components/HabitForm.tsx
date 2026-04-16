@@ -127,7 +127,7 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
                     'flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all text-xs',
                     form.category === cat.label
                       ? 'border-current'
-                      : 'border-transparent hover:border-gray-200 dark:hover:border-gray-700'
+                      : 'border-transparent'
                   )}
                   style={{
                     background: form.category === cat.label ? cat.bg : 'var(--bg)',
@@ -157,7 +157,7 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
                     'flex-1 py-2 rounded-xl border-2 text-sm font-medium capitalize transition-all',
                     form.frequency === freq
                       ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-400 text-primary-700 dark:text-primary-400'
-                      : 'border-transparent text-gray-500 hover:border-gray-200'
+                      : 'border-transparent text-gray-500'
                   )}
                   style={{ background: form.frequency === freq ? undefined : 'var(--bg)' }}
                 >
@@ -178,7 +178,7 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
                   key={color}
                   type="button"
                   onClick={() => setForm(f => ({ ...f, color }))}
-                  className="w-7 h-7 rounded-full transition-transform hover:scale-110"
+                  className="w-7 h-7 rounded-full transition-transform"
                   style={{
                     background: color,
                     outline: form.color === color ? `3px solid ${color}` : 'none',

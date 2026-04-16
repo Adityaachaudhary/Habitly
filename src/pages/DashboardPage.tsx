@@ -170,8 +170,8 @@ export default function DashboardPage() {
             { label: 'Completed', value: completed, icon: <CheckCircle2 size={14} className="text-primary-600" /> },
             { label: 'Avg Streak', value: habits.length > 0 ? Math.round(habits.reduce((s, h) => s + (h.streak?.current_streak || 0), 0) / habits.length) : 0, icon: <TrendingUp size={14} className="text-amber-500" /> },
           ].map(({ label, value, icon }) => (
-            <div key={label} className="group/stat flex items-center gap-4 p-4 rounded-2xl border transition-all hover:bg-white dark:hover:bg-white/5" style={{ borderColor: 'var(--glass-border)', background: 'rgba(0,0,0,0.02)' }}>
-              <div className="w-10 h-10 rounded-xl bg-white dark:bg-black/20 shadow-sm flex items-center justify-center transition-transform group-hover/stat:scale-110">
+            <div key={label} className="flex items-center gap-4 p-4 rounded-2xl border transition-all" style={{ borderColor: 'var(--glass-border)', background: 'rgba(0,0,0,0.02)' }}>
+              <div className="w-10 h-10 rounded-xl bg-white dark:bg-black/20 shadow-sm flex items-center justify-center">
                 {icon}
               </div>
               <div>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
           </h2>
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {topStreaks.map(h => (
-              <div key={h.id} className="card p-4 flex-shrink-0 flex items-center gap-4 hover:shadow-lg transition-shadow" style={{ minWidth: 200 }}>
+              <div key={h.id} className="card p-4 flex-shrink-0 flex items-center gap-4 transition-shadow" style={{ minWidth: 200 }}>
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner" style={{ background: h.color + '15' }}>
                   🔥
                 </div>

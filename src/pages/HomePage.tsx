@@ -3,6 +3,7 @@ import {
   Zap, BarChart2, Users, Brain, ChevronDown, Moon, Sun, Mail, Globe
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { Link } from 'react-router-dom'
 import AuthModal from '../components/common/AuthModal'
 import { cn } from '../utils/helpers'
 
@@ -11,25 +12,29 @@ const FEATURES = [
     icon: <Zap size={22} />,
     title: 'Atomic Tracking',
     desc: 'Log habits in seconds. Beautiful streaks keep you motivated every single day.',
-    color: '#22c55e'
+    color: '#22c55e',
+    comingSoon: false
   },
   {
     icon: <Brain size={22} />,
     title: 'AI Habit Coach',
     desc: 'Get personalized insights and streak recovery tips powered by Llama 3.3.',
-    color: '#8b5cf6'
+    color: '#8b5cf6',
+    comingSoon: true
   },
   {
     icon: <BarChart2 size={22} />,
     title: 'Advanced Analytics',
     desc: 'Visualize your progress with heatmaps, trend lines, and category breakdowns.',
-    color: '#3b82f6'
+    color: '#3b82f6',
+    comingSoon: false
   },
   {
     icon: <Users size={22} />,
     title: 'Social Momentum',
     desc: 'Compete on global leaderboards and build habits together with friends.',
-    color: '#f97316'
+    color: '#f97316',
+    comingSoon: true
   }
 ]
 
@@ -88,7 +93,7 @@ export default function HomePage() {
         )}
         style={{ borderColor: scrolled ? 'var(--border)' : 'transparent' }}
       >
-        <div className="flex items-center gap-2.5 group cursor-pointer transition-transform hover:scale-105">
+        <div className="flex items-center gap-2.5 cursor-pointer">
           <div className="w-9 h-9 rounded-xl bg-primary-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
             <span className="text-white font-bold text-lg">H</span>
           </div>
@@ -100,7 +105,7 @@ export default function HomePage() {
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="opacity-70 hover:opacity-100 transition-all hover:text-primary-600"
+              className="opacity-70 transition-all"
             >
               {item}
             </a>
@@ -110,14 +115,14 @@ export default function HomePage() {
         <div className="flex items-center gap-3">
           <button
             onClick={toggleTheme}
-            className="p-2.5 rounded-xl transition-all hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="p-2.5 rounded-xl transition-all"
             style={{ color: 'var(--muted)' }}
           >
             {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
           </button>
           <button
             onClick={() => openAuth('login')}
-            className="hidden sm:block font-semibold text-sm px-4 hover:text-primary-600 transition-colors"
+            className="hidden sm:block font-semibold text-sm px-4 transition-colors"
           >
             Log in
           </button>
@@ -139,9 +144,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 relative z-10">
           {/* Text content */}
           <div className="flex-1 text-center lg:text-left space-y-8 animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold bg-primary-100 dark:bg-primary-900/30 text-primary-600 uppercase tracking-widest leading-none">
-              <Zap size={14} className="fill-primary-600" /> Version 2.0 is live
-            </div>
+
             <h1 className="font-display font-black text-5xl md:text-7xl tracking-tight leading-[1.05]">
               Master your <br />
               <span className="text-primary-600">daily rhythms.</span>
@@ -152,11 +155,11 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <button
                 onClick={() => openAuth('signup')}
-                className="btn-primary px-8 py-4 text-lg shadow-xl shadow-primary-500/30 w-full sm:w-auto hover:translate-y-[-2px] transition-all"
+                className="btn-primary px-8 py-4 text-lg shadow-xl shadow-primary-500/30 w-full sm:w-auto transition-all"
               >
                 Get Started for Free
               </button>
-              <button className="px-8 py-4 rounded-2xl border font-bold text-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all w-full sm:w-auto" style={{ borderColor: 'var(--border)' }}>
+              <button className="px-8 py-4 rounded-2xl border font-bold text-lg transition-all w-full sm:w-auto" style={{ borderColor: 'var(--border)' }}>
                 Watch Demo
               </button>
             </div>
@@ -192,14 +195,19 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {FEATURES.map(({ icon, title, desc, color }) => (
+            {FEATURES.map(({ icon, title, desc, color, comingSoon }) => (
               <div
                 key={title}
-                className="card p-8 group hover:translate-y-[-8px] transition-all duration-300"
+                className="card p-8 transition-all duration-300 relative"
                 style={{ borderColor: 'var(--border)' }}
               >
+                {comingSoon && (
+                  <span className="absolute top-4 right-4 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full" style={{ background: color + '20', color }}>
+                    Coming Soon
+                  </span>
+                )}
                 <div
-                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-12"
+                  className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6"
                   style={{ background: color + '15', color }}
                 >
                   {icon}
@@ -260,7 +268,7 @@ export default function HomePage() {
       {/* Contact Section */}
       <section id="contact" className="py-24 px-6 text-center space-y-8">
         <div className="max-w-2xl mx-auto space-y-6">
-          <div className="w-20 h-20 rounded-3xl bg-primary-500 flex items-center justify-center text-white text-3xl mx-auto mb-4 animate-bounce shadow-xl shadow-primary-500/30">
+          <div className="w-20 h-20 rounded-3xl bg-primary-500 flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-xl shadow-primary-500/30">
             👋
           </div>
           <h2 className="font-display font-black text-4xl">Have a question?</h2>
@@ -271,7 +279,7 @@ export default function HomePage() {
             <a href="mailto:hello@habitly.app" className="btn-primary px-8 py-3 flex items-center gap-2">
               <Mail size={18} /> Email Support
             </a>
-            <button className="px-8 py-3 rounded-2xl border font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-all" style={{ borderColor: 'var(--border)' }}>
+            <button className="px-8 py-3 rounded-2xl border font-bold transition-all" style={{ borderColor: 'var(--border)' }}>
               Join Discord
             </button>
           </div>
@@ -289,14 +297,13 @@ export default function HomePage() {
           </div>
 
           <div className="flex gap-8 font-medium">
-            <a href="#" className="hover:text-primary-600 transition-colors">Privacy</a>
-            <a href="#" className="hover:text-primary-600 transition-colors">Terms</a>
-            <a href="#" className="hover:text-primary-600 transition-colors">Status</a>
+            <Link to="/privacy" className="transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="transition-colors">Terms of Service</Link>
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="#" className="p-2 hover:text-primary-600 transition-all"><Mail size={18} /></a>
-            <a href="#" className="p-2 hover:text-primary-600 transition-all"><Globe size={18} /></a>
+            <a href="#" className="p-2 transition-all"><Mail size={18} /></a>
+            <a href="#" className="p-2 transition-all"><Globe size={18} /></a>
           </div>
         </div>
         <p className="text-center text-xs opacity-40 mt-8">© 2026 Habitly. All rights reserved.</p>

@@ -89,7 +89,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
                 <button
                   key={prompt}
                   onClick={() => onSend(prompt)}
-                  className="text-xs px-3 py-2 rounded-xl border transition-all hover:shadow-sm active:scale-95"
+                  className="text-xs px-3 py-2 rounded-xl border transition-all active:scale-95"
                   style={{ borderColor: 'rgba(139,92,246,0.3)', background: 'rgba(139,92,246,0.05)', color: '#8b5cf6' }}
                 >
                   {prompt}
@@ -154,7 +154,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
               <button
                 key={prompt}
                 onClick={() => onSend(prompt)}
-                className="text-xs px-3 py-1.5 rounded-xl flex-shrink-0 transition-all hover:opacity-80"
+                className="text-xs px-3 py-1.5 rounded-xl flex-shrink-0 transition-all"
                 style={{ background: 'rgba(139,92,246,0.08)', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.2)' }}
               >
                 <Sparkles size={10} className="inline mr-1" />

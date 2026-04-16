@@ -54,7 +54,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
     <div
       className={cn(
         'card p-6 relative transition-all duration-300 animate-slide-up group overflow-hidden',
-        habit.completed_today ? 'opacity-80 scale-[0.98]' : 'hover:scale-[1.02] hover:shadow-xl'
+        habit.completed_today ? 'opacity-80 scale-[0.98]' : ''
       )}
       style={{ borderLeft: `4px solid ${habit.color}`, background: habit.completed_today ? 'rgba(0,0,0,0.02)' : 'var(--card)' }}
     >
@@ -118,7 +118,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen(o => !o)}
-            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+            className="opacity-60 transition-opacity p-1 rounded-lg"
             style={{ color: 'var(--muted)' }}
           >
             <MoreVertical size={14} />
@@ -129,14 +129,14 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
             >
               <button
                 onClick={() => { onEdit(habit); setMenuOpen(false) }}
-                className="flex items-center gap-2 w-full px-3 py-2 text-xs hover:bg-gray-50 dark:hover:bg-gray-800"
+                className="flex items-center gap-2 w-full px-3 py-2 text-xs"
                 style={{ color: 'var(--text)' }}
               >
                 <Pencil size={12} /> Edit
               </button>
               <button
                 onClick={() => { onDelete(habit.id); setMenuOpen(false) }}
-                className="flex items-center gap-2 w-full px-3 py-2 text-xs hover:bg-red-50 dark:hover:bg-red-900/20"
+                className="flex items-center gap-2 w-full px-3 py-2 text-xs"
                 style={{ color: '#ef4444' }}
               >
                 <Trash2 size={12} /> Delete
@@ -177,7 +177,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
       {/* Streak + best */}
       <div className="flex items-center justify-between p-3 rounded-2xl" style={{ background: habit.completed_today ? 'transparent' : 'rgba(0,0,0,0.02)' }}>
         <div className="flex items-center gap-2">
-          <span className={cn('text-xl filter drop-shadow-sm transition-transform group-hover:scale-125', (streak > 0 && !habit.completed_today) && 'animate-pulse')}>
+          <span className={cn('text-xl filter drop-shadow-sm', (streak > 0 && !habit.completed_today) && 'animate-pulse')}>
             {streak > 0 ? '🔥' : '💤'}
           </span>
           <div>

@@ -11,6 +11,8 @@ import DashboardPage from './pages/DashboardPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 // import SocialPage from './pages/SocialPage'
 import SettingsPage from './pages/SettingsPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import TermsOfServicePage from './pages/TermsOfServicePage'
 // import PremiumPage from './pages/PremiumPage'
 // import AICoachPage from './pages/AICoachPage'
 
@@ -55,6 +57,8 @@ function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={user ? <Navigate to="/dashboard" replace /> : <HomePage />} />
+      <Route path="/privacy" element={<PrivacyPolicyPage />} />
+      <Route path="/terms" element={<TermsOfServicePage />} />
       <Route element={
         <ProtectedRoute>
           <HabitsProvider>
