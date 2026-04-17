@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
         <section className="space-y-4">
           <h2 className="font-display font-bold text-xl">5. Your Rights</h2>
           <p className="leading-relaxed opacity-80" style={{ color: 'var(--muted)' }}>
-            You may request access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:hello@habitly.app" className="text-primary-600 font-semibold">hello@habitly.app</a>. Upon account deletion, all associated data will be permanently removed within 30 days.
+            You may request access to, correction of, or deletion of your personal data at any time by contacting us at <a href="mailto:hello@habitly.app" className="font-semibold" style={{ color: 'var(--primary-600)' }}>hello@habitly.app</a>. Upon account deletion, all associated data will be permanently removed within 30 days.
           </p>
         </section>
 
@@ -80,7 +80,7 @@ export default function PrivacyPolicyPage() {
           <h2 className="font-display font-bold text-xl">8. Contact Us</h2>
           <p className="leading-relaxed opacity-80" style={{ color: 'var(--muted)' }}>
             If you have questions or concerns about this Privacy Policy, please reach out to us at{' '}
-            <a href="mailto:hello@habitly.app" className="text-primary-600 font-semibold">hello@habitly.app</a>.
+            <a href="mailto:hello@habitly.app" className="font-semibold" style={{ color: 'var(--primary-600)' }}>hello@habitly.app</a>.
           </p>
         </section>
       </main>

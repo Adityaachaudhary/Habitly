@@ -50,7 +50,10 @@ export default function Header({ onOpenMobileNav }: HeaderProps) {
             className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border bg-black/5 dark:bg-white/5 transition-all" 
             style={{ borderColor: 'var(--glass-border)' }}
           >
-            <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 text-xs font-black shadow-sm border-2 border-primary-500">
+            <div 
+              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-sm border-2"
+              style={{ background: 'var(--primary-100)', color: 'var(--primary-700)', borderColor: 'var(--primary-500)' }}
+            >
               {user.full_name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
             </div>
             <div className="hidden sm:block text-left">

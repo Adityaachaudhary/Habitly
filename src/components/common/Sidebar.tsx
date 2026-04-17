@@ -61,7 +61,10 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
           style={{ borderColor: 'var(--glass-border)' }}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-primary-500 flex items-center justify-center flex-shrink-0 shadow-lg cursor-pointer">
+            <div 
+              className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer"
+              style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+            >
               <span className="text-white text-lg font-bold">H</span>
             </div>
             {!collapsed && (

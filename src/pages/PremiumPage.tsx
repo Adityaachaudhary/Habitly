@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 const PREMIUM_FEATURES = [
   { icon: <Brain size={20} />, title: 'AI Habit Insights', desc: 'Smart pattern analysis tells you when and why you succeed', color: '#8b5cf6' },
   { icon: <FileText size={20} />, title: 'Weekly AI Reports', desc: 'Personalized Sunday summaries with actionable tips', color: '#3b82f6' },
-  { icon: <BarChart2 size={20} />, title: 'Advanced Analytics', desc: 'Predictions, correlations, and optimization suggestions', color: '#22c55e' },
+  { icon: <BarChart2 size={20} />, title: 'Advanced Analytics', desc: 'Predictions, correlations, and optimization suggestions', color: 'var(--primary-500)' },
   { icon: <Target size={20} />, title: 'Habit Suggestions', desc: 'AI recommends habits based on your patterns', color: '#f97316' },
   { icon: <MessageSquare size={20} />, title: 'AI Coach', desc: 'Streak recovery help and personalized motivation', color: '#ec4899' },
   { icon: <Zap size={20} />, title: 'No Ads Ever', desc: 'Clean, distraction-free experience', color: '#f59e0b' },
@@ -21,7 +21,7 @@ export default function PremiumPage() {
       {/* Hero banner */}
       <div
         className="card p-10 text-center relative overflow-hidden shadow-xl border-none"
-        style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #f5f3ff 100%)' }}
+        style={{ background: 'linear-gradient(135deg, var(--primary-50) 0%, #eff6ff 50%, #f5f3ff 100%)' }}
       >
         <div className="relative z-10">
           <div
@@ -41,7 +41,7 @@ export default function PremiumPage() {
             <div className="flex flex-col items-center gap-4">
               <div
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-base shadow-lg"
-                style={{ background: '#22c55e', color: 'white' }}
+                style={{ background: 'var(--primary-500)', color: 'white' }}
               >
                 <Check size={20} strokeWidth={3} /> You're on Premium ✨
               </div>
@@ -67,7 +67,7 @@ export default function PremiumPage() {
         
         {/* Decorative elements */}
         <div className="absolute -top-12 -right-12 w-64 h-64 rounded-full opacity-30 pointer-events-none blur-3xl shadow-amber-200"
-          style={{ background: 'radial-gradient(circle, #22c55e, transparent)' }} />
+          style={{ background: 'radial-gradient(circle, var(--primary-500), transparent)' }} />
         <div className="absolute -bottom-12 -left-12 w-64 h-64 rounded-full opacity-30 pointer-events-none blur-3xl shadow-violet-200"
           style={{ background: 'radial-gradient(circle, #8b5cf6, transparent)' }} />
       </div>
@@ -138,12 +138,12 @@ export default function PremiumPage() {
             <div
               key={plan}
               className="card p-8 flex flex-col items-center text-center relative border-2 hover:scale-[1.02] transition-all"
-              style={{ background: 'var(--card)', borderColor: badge ? '#22c55e' : 'var(--border)' }}
+              style={{ background: 'var(--card)', borderColor: badge ? 'var(--primary-500)' : 'var(--border)' }}
             >
               {badge && (
                 <span
                   className="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] tracking-widest px-4 py-1.5 rounded-full font-black shadow-sm"
-                  style={{ background: '#22c55e', color: 'white' }}
+                  style={{ background: 'var(--primary-500)', color: 'white' }}
                 >
                   {badge}
                 </span>
@@ -158,8 +158,8 @@ export default function PremiumPage() {
               <ul className="text-left w-full space-y-3 mb-8">
                 {['All AI Features', 'Advanced Analytics', 'Unlimited Habits', 'No Advertisements'].map(feat => (
                   <li key={feat} className="flex items-center gap-3 text-sm" style={{ color: 'var(--text)' }}>
-                    <div className="w-5 h-5 rounded-full bg-green-500/10 flex items-center justify-center">
-                      <Check size={12} className="text-green-500" />
+                    <div className="w-5 h-5 rounded-full bg-primary-500/10 flex items-center justify-center">
+                      <Check size={12} className="text-primary-500" />
                     </div>
                     {feat}
                   </li>
@@ -167,7 +167,7 @@ export default function PremiumPage() {
               </ul>
               
               <button
-                className={`w-full py-4 rounded-2xl font-bold text-sm transition-all ${badge ? 'bg-green-500 text-white shadow-lg hover:bg-green-600' : 'bg-transparent border border-gray-200 hover:bg-gray-50'}`}
+                className={`w-full py-4 rounded-2xl font-bold text-sm transition-all ${badge ? 'bg-primary-500 text-white shadow-lg' : 'bg-transparent border border-gray-200 hover:bg-gray-50'}`}
                 style={!badge ? { color: 'var(--text)', borderColor: 'var(--border)' } : {}}
               >
                 Get Started

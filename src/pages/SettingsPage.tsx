@@ -192,7 +192,7 @@ export default function SettingsPage() {
             {passwordLoading ? 'Updating...' : 'Change password'}
           </button>
           {passwordMessage && (
-            <p className="text-xs mt-1" style={{ color: '#16a34a' }}>{passwordMessage}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--primary-600)' }}>{passwordMessage}</p>
           )}
           {passwordError && (
             <p className="text-xs mt-1" style={{ color: '#ef4444' }}>{passwordError}</p>
@@ -361,8 +361,8 @@ export default function SettingsPage() {
           <span
             className="text-xs px-3 py-1 rounded-full font-semibold"
             style={{
-              background: user?.is_premium ? '#fffbeb' : 'var(--primary-50, #f0fdf4)',
-              color: user?.is_premium ? '#d97706' : '#16a34a',
+              background: user?.is_premium ? '#fffbeb' : 'var(--primary-50)',
+              color: user?.is_premium ? '#d97706' : 'var(--primary-600)',
             }}
           >
             {user?.is_premium ? '✨ Premium' : '🌱 Free'}

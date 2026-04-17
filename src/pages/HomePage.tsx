@@ -12,7 +12,7 @@ const FEATURES = [
     icon: <Zap size={22} />,
     title: 'Atomic Tracking',
     desc: 'Log habits in seconds. Beautiful streaks keep you motivated every single day.',
-    color: '#22c55e',
+    color: 'var(--primary-500)',
     comingSoon: false
   },
   {
@@ -94,7 +94,10 @@ export default function HomePage() {
         style={{ borderColor: scrolled ? 'var(--border)' : 'transparent' }}
       >
         <div className="flex items-center gap-2.5 cursor-pointer">
-          <div className="w-9 h-9 rounded-xl bg-primary-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
+          <div 
+            className="w-9 h-9 rounded-xl flex items-center justify-center"
+            style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+          >
             <span className="text-white font-bold text-lg">H</span>
           </div>
           <span className="font-display font-bold text-xl tracking-tight hidden sm:block">Habitly</span>
@@ -128,7 +131,8 @@ export default function HomePage() {
           </button>
           <button
             onClick={() => openAuth('signup')}
-            className="btn-primary px-5 py-2.5 text-sm shadow-lg shadow-primary-500/20 active:scale-95"
+            className="btn-primary px-5 py-2.5 text-sm active:scale-95"
+            style={{ boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
           >
             Join Free
           </button>
@@ -137,17 +141,13 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden">
-        {/* Background blobs */}
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-400/20 rounded-full blur-[120px] pointer-events-none -translate-y-1/2" />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-violet-400/20 rounded-full blur-[100px] pointer-events-none" />
-
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16 relative z-10">
           {/* Text content */}
           <div className="flex-1 text-center lg:text-left space-y-8 animate-slide-up">
 
             <h1 className="font-display font-black text-5xl md:text-7xl tracking-tight leading-[1.05]">
               Master your <br />
-              <span className="text-primary-600">daily rhythms.</span>
+              <span style={{ color: 'var(--primary-600)' }}>daily rhythms.</span>
             </h1>
             <p className="text-lg md:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed opacity-80" style={{ color: 'var(--muted)' }}>
               Habitly combines atomic tracking with AI-powered coaching to help you build rituals that actually stick. Join a community of intentional high-performers.
@@ -155,7 +155,8 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <button
                 onClick={() => openAuth('signup')}
-                className="btn-primary px-8 py-4 text-lg shadow-xl shadow-primary-500/30 w-full sm:w-auto transition-all"
+                className="btn-primary px-8 py-4 text-lg w-full sm:w-auto transition-all"
+                style={{ boxShadow: '0 20px 25px -5px rgba(var(--primary-500-rgb), 0.3)' }}
               >
                 Get Started for Free
               </button>
@@ -175,7 +176,6 @@ export default function HomePage() {
 
           {/* Hero Image */}
           <div className="flex-1 w-full max-w-2xl animate-fade-in relative">
-            <div className="absolute -inset-1 bg-gradient-to-tr from-primary-500 to-violet-500 rounded-3xl blur opacity-20" />
             <img
               src="/landing_hero.png"
               alt="Habitly Dashboard"
@@ -221,7 +221,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-24 px-6" style={{ background: 'rgba(0,0,0,0.02)' }}>
+      <section id="testimonials" className="py-24 px-6">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center space-y-4">
             <h2 className="font-display font-black text-4xl">Built for momentum.</h2>
@@ -232,9 +232,12 @@ export default function HomePage() {
             {TESTIMONIALS.map(({ name, role, text, avatar }) => (
               <div key={name} className="glass-card p-8 space-y-6 flex flex-col justify-between">
                 <p className="text-lg italic opacity-90 leading-relaxed">"{text}"</p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-black text-lg">
-                    {avatar}
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer"
+                    style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+                  >
+                    <span className="text-white text-lg font-bold">{avatar}</span>
                   </div>
                   <div>
                     <p className="font-bold">{name}</p>
@@ -265,32 +268,15 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section id="contact" className="py-24 px-6 text-center space-y-8">
-        <div className="max-w-2xl mx-auto space-y-6">
-          <div className="w-20 h-20 rounded-3xl bg-primary-500 flex items-center justify-center text-white text-3xl mx-auto mb-4 shadow-xl shadow-primary-500/30">
-            👋
-          </div>
-          <h2 className="font-display font-black text-4xl">Have a question?</h2>
-          <p className="text-lg opacity-70" style={{ color: 'var(--muted)' }}>
-            We're here to help you on your journey. Text our team or join our community.
-          </p>
-          <div className="flex justify-center gap-4">
-            <a href="mailto:hello@habitly.app" className="btn-primary px-8 py-3 flex items-center gap-2">
-              <Mail size={18} /> Email Support
-            </a>
-            <button className="px-8 py-3 rounded-2xl border font-bold transition-all" style={{ borderColor: 'var(--border)' }}>
-              Join Discord
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="py-12 px-6 border-t" style={{ borderColor: 'var(--border)' }}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 text-sm opacity-60">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary-500 flex items-center justify-center">
+            <div 
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+            >
               <span className="text-white font-bold text-sm">H</span>
             </div>
             <span className="font-display font-bold text-lg tracking-tight">Habitly</span>

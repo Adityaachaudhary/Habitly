@@ -56,7 +56,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
           <div>
             <p className="font-semibold text-sm" style={{ color: 'var(--text)' }}>Habit Coach</p>
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+              <span className="w-1.5 h-1.5 rounded-full bg-primary-500" />
               <p className="text-xs" style={{ color: 'var(--muted)' }}>Powered by Groq · Llama 3.3</p>
             </div>
           </div>

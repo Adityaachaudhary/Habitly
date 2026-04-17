@@ -186,7 +186,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 <button
                   type="button"
                   onClick={() => { setMode('forgot_password'); setError(''); setNotice('') }}
-                  className="text-xs font-semibold text-primary-600"
+                  className="text-xs font-semibold"
+                  style={{ color: 'var(--primary-600)' }}
                 >
                   Forgot password?
                 </button>
@@ -202,13 +203,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
             {notice && (
               <p
                 className="text-xs px-4 py-3 rounded-xl border animate-slide-up"
-                style={{ background: 'rgba(34, 197, 94, 0.08)', color: '#166534', borderColor: 'rgba(34, 197, 94, 0.25)' }}
+                style={{ background: 'var(--primary-50)', color: 'var(--primary-700)', borderColor: 'var(--primary-200)' }}
               >
                 {notice}
               </p>
             )}
 
-            <button type="submit" disabled={loading} className="btn-primary w-full text-base py-3.5 mt-4 rounded-xl font-bold shadow-lg shadow-primary-500/20 active:scale-95 transition-all">
+            <button 
+              type="submit" 
+              disabled={loading} 
+              className="btn-primary w-full text-base py-3.5 mt-4 rounded-xl font-bold active:scale-95 transition-all"
+              style={{ boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+            >
               {loading
                 ? 'Please wait...'
                 : mode === 'login'
@@ -233,7 +239,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 setError('')
                 setNotice('')
               }}
-              className="font-bold underline text-primary-600 transition-transform"
+              className="font-bold underline transition-transform"
+              style={{ color: 'var(--primary-600)' }}
             >
               {mode === 'login' ? 'Sign up free' : 'Sign in here'}
             </button>

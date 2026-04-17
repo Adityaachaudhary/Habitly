@@ -78,7 +78,7 @@ export default function TermsOfServicePage() {
         <section className="space-y-4">
           <h2 className="font-display font-bold text-xl">8. Termination</h2>
           <p className="leading-relaxed opacity-80" style={{ color: 'var(--muted)' }}>
-            You may delete your account at any time through the Settings page. We reserve the right to suspend or terminate accounts that violate these terms. Upon termination, your data will be deleted in accordance with our <Link to="/privacy" className="text-primary-600 font-semibold">Privacy Policy</Link>.
+            You may delete your account at any time through the Settings page. We reserve the right to suspend or terminate accounts that violate these terms. Upon termination, your data will be deleted in accordance with our <Link to="/privacy" className="font-semibold" style={{ color: 'var(--primary-600)' }}>Privacy Policy</Link>.
           </p>
         </section>
 
@@ -93,7 +93,7 @@ export default function TermsOfServicePage() {
           <h2 className="font-display font-bold text-xl">10. Contact Us</h2>
           <p className="leading-relaxed opacity-80" style={{ color: 'var(--muted)' }}>
             If you have questions about these Terms of Service, please contact us at{' '}
-            <a href="mailto:hello@habitly.app" className="text-primary-600 font-semibold">hello@habitly.app</a>.
+            <a href="mailto:hello@habitly.app" className="font-semibold" style={{ color: 'var(--primary-600)' }}>hello@habitly.app</a>.
           </p>
         </section>
       </main>

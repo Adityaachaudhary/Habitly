@@ -14,6 +14,11 @@ import { CATEGORIES } from '../types'
 interface DayData { date: string; rate: number; label: string }
 interface HabitStat { name: string; rate: number; color: string; streak: number }
 
+const resolveColor = (c: string) => 
+  (c === '#22c55e' || c === '#16a34a' || c === '#4ade80' || c === '#15803d' || c === '#86efac') 
+    ? 'var(--primary-500)' 
+    : c
+
 export default function AnalyticsPage() {
   const { habits } = useHabits()
   const { user } = useAuth()
@@ -65,7 +70,7 @@ export default function AnalyticsPage() {
     return habits.map(h => {
       const hLogs = logs.filter(l => l.habit_id === h.id)
       const rate = calculateCompletionRate(hLogs.filter(l => l.completed).length, Math.max(hLogs.length, 1))
-      return { name: h.name, rate, color: h.color, streak: h.streak?.current_streak || 0 }
+      return { name: h.name, rate, color: resolveColor(h.color), streak: h.streak?.current_streak || 0 }
     }).sort((a, b) => b.rate - a.rate)
   }, [habits, logs])
 
@@ -77,7 +82,7 @@ export default function AnalyticsPage() {
     })
     return Array.from(map.entries()).map(([name, value]) => ({
       name, value,
-      color: CATEGORIES.find(c => c.label === name)?.color || '#22c55e',
+      color: CATEGORIES.find(c => c.label === name)?.color || 'var(--primary-500)',
     }))
   }, [habits])
 
@@ -110,15 +115,7 @@ export default function AnalyticsPage() {
     return weeks
   }, [logs, habits])
 
-  function heatmapColor(rate: number) {
-    if (rate === 0) return 'var(--border)'
-    if (rate < 0.3) return '#bbf7d0'
-    if (rate < 0.6) return '#4ade80'
-    if (rate < 0.9) return '#22c55e'
-    return '#15803d'
-  }
-
-  const tabs = [
+   const tabs = [
     { id: 'overview', label: 'Overview' },
     { id: 'heatmap', label: 'Heatmap' },
     { id: 'habits', label: 'Per Habit' },
@@ -195,9 +192,9 @@ export default function AnalyticsPage() {
                     labelFormatter={l => new Date(l).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
                   />
                   <Line
-                    type="monotone" dataKey="rate" stroke="#22c55e" strokeWidth={2.5}
-                    dot={{ fill: '#22c55e', r: 3, strokeWidth: 0 }}
-                    activeDot={{ r: 5, fill: '#22c55e' }}
+                    type="monotone" dataKey="rate" stroke="var(--primary-500)" strokeWidth={2.5}
+                    dot={{ fill: 'var(--primary-500)', r: 3, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: 'var(--primary-500)' }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -239,26 +236,40 @@ export default function AnalyticsPage() {
           <h3 className="font-semibold text-sm mb-1" style={{ color: 'var(--text)' }}>Activity Heatmap</h3>
           <p className="text-xs mb-4" style={{ color: 'var(--muted)' }}>Last 12 weeks of habit completions</p>
           <div className="overflow-x-auto">
-            <div className="flex gap-1">
+            <div className="flex gap-1.5 pt-2">
               {heatmapWeeks.map((week, wi) => (
-                <div key={wi} className="flex flex-col gap-1">
-                  {week.map((day, di) => (
-                    <div
-                      key={di}
-                      className="heatmap-cell cursor-default"
-                      style={{ background: heatmapColor(day.rate) }}
-                      title={`${day.date}: ${Math.round(day.rate * 100)}%`}
-                    />
-                  ))}
+                <div key={wi} className="flex flex-col gap-1.5">
+                  {week.map((day, di) => {
+                    const radius = 12;
+                    const circumference = 2 * Math.PI * radius;
+                    return (
+                      <div
+                        key={di}
+                        className="w-5 h-5 flex-shrink-0 cursor-default"
+                        title={`${day.date}: ${Math.round(day.rate * 100)}%`}
+                      >
+                        <svg viewBox="0 0 32 32" className="-rotate-90 w-full h-full">
+                          <circle
+                            cx="16" cy="16" r={radius}
+                            fill="none" stroke="var(--border)"
+                            strokeWidth="5" className="opacity-30"
+                          />
+                          {day.rate > 0 && (
+                            <circle
+                              cx="16" cy="16" r={radius}
+                              fill="none" stroke="var(--primary-500)"
+                              strokeWidth="5" strokeLinecap="round"
+                              strokeDasharray={circumference}
+                              strokeDashoffset={circumference * (1 - day.rate)}
+                              style={{ transition: 'stroke-dashoffset 0.5s ease' }}
+                            />
+                          )}
+                        </svg>
+                      </div>
+                    )
+                  })}
                 </div>
               ))}
-            </div>
-            <div className="flex items-center gap-2 mt-3 justify-end">
-              <span className="text-xs" style={{ color: 'var(--muted)' }}>Less</span>
-              {[0, 0.25, 0.5, 0.75, 1].map(r => (
-                <div key={r} className="heatmap-cell" style={{ background: heatmapColor(r) }} />
-              ))}
-              <span className="text-xs" style={{ color: 'var(--muted)' }}>More</span>
             </div>
           </div>
         </div>

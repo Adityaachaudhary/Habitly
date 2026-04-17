@@ -84,7 +84,7 @@ export default function DashboardPage() {
         <div>
           <p className="text-sm font-bold uppercase tracking-widest opacity-60 mb-1" style={{ color: 'var(--muted)' }}>{today}</p>
           <h1 className="font-display font-extrabold text-4xl mt-0.5" style={{ color: 'var(--text)' }}>
-            {getGreeting()}, <span className="text-primary-600">{user?.full_name?.split(' ')[0] || 'there'}</span> 👋
+            {getGreeting()}, <span style={{ color: 'var(--primary-500)' }}>{user?.full_name?.split(' ')[0] || 'there'}</span> 👋
           </h1>
         </div>
         <button onClick={() => setShowForm(true)} className="btn-primary flex-shrink-0 px-6 py-4 shadow-lg active:scale-95">
@@ -128,26 +128,20 @@ export default function DashboardPage() {
           <div>
             <h2 className="font-display font-bold text-2xl mb-1.5" style={{ color: 'var(--text)' }}>Daily Overview</h2>
             <p className="text-base font-medium opacity-70" style={{ color: 'var(--muted)' }}>
-              You've completed <span className="text-primary-600 font-bold">{completed}</span> of <span className="font-bold">{total}</span> habits today.
+              You've completed <span style={{ color: 'var(--primary-600)' }} className="font-bold">{completed}</span> of <span className="font-bold">{total}</span> habits today.
             </p>
           </div>
           <div className="relative w-24 h-24 flex-shrink-0">
-            <svg viewBox="0 0 64 64" className="w-24 h-24 -rotate-90 drop-shadow-[0_0_12px_rgba(34,197,94,0.2)]">
+            <svg viewBox="0 0 64 64" className="w-24 h-24 -rotate-90" style={{ filter: 'drop-shadow(0 0 12px rgba(var(--primary-500-rgb), 0.2))' }}>
               <circle cx="32" cy="32" r="28" fill="none" strokeWidth="6" stroke="var(--border)" className="opacity-20" />
               <circle
                 cx="32" cy="32" r="28" fill="none" strokeWidth="6"
-                stroke="url(#progressGradient)"
+                stroke="var(--primary-500)"
                 strokeDasharray={`${2 * Math.PI * 28}`}
                 strokeDashoffset={`${2 * Math.PI * 28 * (1 - completionPct / 100)}`}
                 strokeLinecap="round"
                 style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
               />
-              <defs>
-                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#22c55e" />
-                  <stop offset="100%" stopColor="#86efac" />
-                </linearGradient>
-              </defs>
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="font-display font-extrabold text-2xl" style={{ color: 'var(--text)' }}>{completionPct}%</span>
@@ -159,7 +153,7 @@ export default function DashboardPage() {
         <div className="w-full rounded-full h-2" style={{ background: 'var(--border)' }}>
           <div
             className="h-2 rounded-full transition-all duration-700"
-            style={{ width: `${completionPct}%`, background: 'linear-gradient(90deg, #22c55e, #4ade80)' }}
+            style={{ width: `${completionPct}%`, background: 'var(--primary-500)' }}
           />
         </div>
 
@@ -167,8 +161,8 @@ export default function DashboardPage() {
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {[
             { label: 'Pending', value: total - completed, icon: <Circle size={14} className="opacity-60" /> },
-            { label: 'Completed', value: completed, icon: <CheckCircle2 size={14} className="text-primary-600" /> },
-            { label: 'Avg Streak', value: habits.length > 0 ? Math.round(habits.reduce((s, h) => s + (h.streak?.current_streak || 0), 0) / habits.length) : 0, icon: <TrendingUp size={14} className="text-amber-500" /> },
+            { label: 'Completed', value: completed, icon: <CheckCircle2 size={14} style={{ color: 'var(--primary-600)' }} /> },
+            { label: 'Avg Streak', value: habits.length > 0 ? Math.round(habits.reduce((s, h) => s + (h.streak?.current_streak || 0), 0) / habits.length) : 0, icon: <TrendingUp size={14} style={{ color: 'var(--amber-500)' }} /> },
           ].map(({ label, value, icon }) => (
             <div key={label} className="flex items-center gap-4 p-4 rounded-2xl border transition-all" style={{ borderColor: 'var(--glass-border)', background: 'rgba(0,0,0,0.02)' }}>
               <div className="w-10 h-10 rounded-xl bg-white dark:bg-black/20 shadow-sm flex items-center justify-center">
@@ -199,7 +193,7 @@ export default function DashboardPage() {
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {topStreaks.map(h => (
               <div key={h.id} className="card p-4 flex-shrink-0 flex items-center gap-4 transition-shadow" style={{ minWidth: 200 }}>
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner" style={{ background: h.color + '15' }}>
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner" style={{ background: (h.color === '#22c55e' ? 'var(--primary-500)' : h.color) + '15' }}>
                   🔥
                 </div>
                 <div>

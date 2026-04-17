@@ -13,7 +13,13 @@ interface HabitCardProps {
   onDelete: (id: string) => Promise<void>
 }
 
+const resolveColor = (c: string) => 
+  (c === '#22c55e' || c === '#16a34a' || c === '#4ade80' || c === '#15803d' || c === '#86efac') 
+    ? 'var(--primary-500)' 
+    : c
+
 export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, onDelete }: HabitCardProps) {
+  const displayColor = resolveColor(habit.color)
   const [toggling, setToggling] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -56,7 +62,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
         'card p-6 relative transition-all duration-300 animate-slide-up group overflow-hidden',
         habit.completed_today ? 'opacity-80 scale-[0.98]' : ''
       )}
-      style={{ borderLeft: `4px solid ${habit.color}`, background: habit.completed_today ? 'rgba(0,0,0,0.02)' : 'var(--card)' }}
+      style={{ borderLeft: `4px solid ${displayColor}`, background: habit.completed_today ? 'rgba(0,0,0,0.02)' : 'var(--card)' }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-6 gap-3">
@@ -66,12 +72,12 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
             onClick={handleToggle}
             disabled={toggling}
             className={cn('habit-check w-10 h-10 border-2 rounded-2xl flex-shrink-0 transition-all active:scale-90', habit.completed_today && 'checked')}
-            style={habit.completed_today ? { background: habit.color, borderColor: habit.color } : { borderColor: 'var(--border)' }}
+            style={habit.completed_today ? { background: displayColor, borderColor: displayColor } : { borderColor: 'var(--border)' }}
           >
             {habit.completed_today ? (
               <Check size={20} className={cn('text-white', justChecked && 'animate-check-pop')} strokeWidth={4} />
             ) : (
-              <span className="w-2 h-2 rounded-full opacity-20" style={{ background: habit.color }} />
+              <span className="w-2 h-2 rounded-full opacity-20" style={{ background: displayColor }} />
             )}
           </button>
 
@@ -86,7 +92,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
               {habit.name}
             </h3>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <span className="text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: habit.color + '15', color: habit.color }}>
+              <span className="text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: displayColor + '15', color: displayColor }}>
                 {habit.category}
               </span>
               {habit.context_tag?.trim() && (
@@ -103,8 +109,8 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
                 className="text-xs mt-2.5 leading-relaxed rounded-xl px-3 py-2 border"
                 style={{
                   color: 'var(--text)',
-                  borderColor: habit.color + '35',
-                  background: habit.color + '0c',
+                  borderColor: displayColor + '35',
+                  background: displayColor + '0c',
                 }}
               >
                 <span className="font-bold opacity-70 mr-1">Plan:</span>
@@ -150,12 +156,12 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
       <div className="mb-6 space-y-2">
         <div className="flex justify-between items-center px-1">
           <span className="text-xs font-bold uppercase tracking-widest opacity-40" style={{ color: 'var(--muted)' }}>30-Day Goal</span>
-          <span className="font-display font-black text-sm" style={{ color: habit.color }}>{streak}/30</span>
+          <span className="font-display font-black text-sm" style={{ color: displayColor }}>{streak}/30</span>
         </div>
         <div className="w-full rounded-full h-2.5 overflow-hidden" style={{ background: 'rgba(0,0,0,0.04)' }}>
           <div
             className="h-full rounded-full transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1)"
-            style={{ width: `${streakProgress}%`, background: `linear-gradient(90deg, ${habit.color}, #ffffff50)` }}
+            style={{ width: `${streakProgress}%`, background: `linear-gradient(90deg, ${displayColor}, #ffffff50)` }}
           />
         </div>
       </div>
@@ -197,7 +203,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
       {habit.completed_today && (
         <div
           className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{ background: `linear-gradient(135deg, ${habit.color}08, transparent)` }}
+          style={{ background: `linear-gradient(135deg, ${displayColor}08, transparent)` }}
         />
       )}
     </div>

@@ -20,12 +20,27 @@
     "categories": {
       "fixes": [
         "Updated page title and SEO meta description in index.html for better brand visibility.",
-        "Verified and cleaned up core landing page assets to ensure no broken images on launch."
+        "Verified and cleaned up core landing page assets to ensure no broken images on launch.",
+        "Ui fixes - removed hover effect from application, Homepage ui changes"
       ],
       "updates": [
         "Performed a comprehensive pre-launch MVP audit covering security (RLS), performance, and mobile responsiveness.",
         "Validated all habit check-in/streak calculation logic for local timezone accuracy.",
-        "Optimized app routing to prevent flashes of unstyled content during session hydration."
+        "Added Privacy and Terms and Sytatements pages in footer of Home page"
+      ]
+    }
+  },
+  {
+    "version": "1.0.5",
+    "date": "2026-04-18",
+    "categories": {
+      "fixes": [
+        "Fixed sidebar layering issue on mobile. Increased z-index of aside and backdrop elements so they correctly overlay the navigation bar."
+      ],
+      "updates": [
+        "Implemented full Password Reset & Recovery flow. Added state listener in AuthContext and success banner in SettingsPage.",
+        "Implemented secure account deletion via Supabase RPC (delete_my_account). Replaced placeholder contact alert with functional database execution.",
+        "Performed pre-launch log sanitization and code polish across contexts and pages."
       ]
     }
   }

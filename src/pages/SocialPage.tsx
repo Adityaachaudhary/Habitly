@@ -83,7 +83,7 @@ export default function SocialPage() {
                     <div
                       key={entry.user_id}
                       className="flex items-center gap-4 px-5 py-3 transition-colors"
-                      style={{ background: isMe ? 'var(--primary-50, #f0fdf4)' : 'transparent' }}
+                      style={{ background: isMe ? 'var(--primary-50)' : 'transparent' }}
                     >
                       <span className="text-lg w-8 text-center flex-shrink-0">{rankEmoji(i)}</span>
                       <div className="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary-700 font-bold text-sm flex-shrink-0">

@@ -118,13 +118,13 @@ export const CATEGORIES: CategoryInfo[] = [
   { label: 'Learning',     icon: '📚',  color: '#3b82f6', bg: '#eff6ff' },
   { label: 'Productivity', icon: '⚡',  color: '#8b5cf6', bg: '#f5f3ff' },
   { label: 'Mindfulness',  icon: '🧘',  color: '#06b6d4', bg: '#ecfeff' },
-  { label: 'Finance',      icon: '💰',  color: '#22c55e', bg: '#f0fdf4' },
+  { label: 'Finance',      icon: '💰',  color: 'var(--primary-500)', bg: 'var(--primary-50)' },
   { label: 'Social',       icon: '🤝',  color: '#ec4899', bg: '#fdf2f8' },
   { label: 'General',      icon: '⭐',  color: '#f59e0b', bg: '#fffbeb' },
 ]
 
 export const HABIT_COLORS = [
-  '#22c55e', '#3b82f6', '#f97316', '#ec4899',
+  'var(--primary-500)', '#3b82f6', '#f97316', '#ec4899',
   '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444',
 ]
 
