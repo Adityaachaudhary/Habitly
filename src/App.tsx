@@ -82,12 +82,16 @@ function AppRoutes() {
   )
 }
 
+import { ToastProvider } from './context/ToastContext'
+
 export default function App() {
   return (
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <AppRoutes />
+          <ToastProvider>
+            <AppRoutes />
+          </ToastProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

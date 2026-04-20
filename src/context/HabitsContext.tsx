@@ -5,6 +5,7 @@ import type { Habit, HabitLog, HabitStreak, HabitWithStreak } from '../types'
 import { getTodayString, localDateString } from '../utils/helpers'
 import { normalizeHabitBehaviorFields } from '../utils/behaviorDesign'
 import { useAuth } from './AuthContext'
+import { useToast } from './ToastContext'
 
 interface HabitsContextType {
   habits: HabitWithStreak[]
@@ -21,6 +22,7 @@ const HabitsContext = createContext<HabitsContextType>({} as HabitsContextType)
 
 export function HabitsProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [habits, setHabits] = useState<HabitWithStreak[]>([])
   const [todayLogs, setTodayLogs] = useState<HabitLog[]>([])
   const [loading, setLoading] = useState(true)
@@ -149,7 +151,9 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         })
       }
       await refreshHabits()
-    } catch (err) {
+      showToast('Habit created successfully!')
+    } catch (err: any) {
+      showToast(err.message || 'Failed to create habit', 'error')
       throw err
     }
   }
@@ -165,7 +169,9 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         if (error) throw error
       }
       await refreshHabits()
-    } catch (err) {
+      showToast('Habit updated')
+    } catch (err: any) {
+      showToast(err.message || 'Failed to update habit', 'error')
       throw err
     }
   }
@@ -191,7 +197,9 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         if (error) throw error
       }
       await refreshHabits()
-    } catch (err) {
+      showToast('Habit deleted')
+    } catch (err: any) {
+      showToast(err.message || 'Failed to delete habit', 'error')
       throw err
     }
   }
@@ -235,7 +243,8 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       // Recalculate streak
       await recalcStreak(habitId)
       await refreshHabits()
-    } catch (_err) {
+    } catch (err: any) {
+      showToast(err.message || 'Failed to toggle habit', 'error')
     }
   }
 

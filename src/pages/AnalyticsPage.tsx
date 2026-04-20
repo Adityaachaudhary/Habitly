@@ -141,9 +141,19 @@ export default function AnalyticsPage() {
         ].map(({ label, value, sub, emoji }) => (
           <div key={label} className="card p-4">
             <div className="text-2xl mb-2">{emoji}</div>
-            <p className="font-display font-bold text-2xl leading-none" style={{ color: 'var(--text)' }}>{value}</p>
-            <p className="text-xs font-medium mt-1" style={{ color: 'var(--text)' }}>{label}</p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{sub}</p>
+            {loading ? (
+              <div className="space-y-2">
+                <div className="skeleton h-6 w-20 rounded" />
+                <div className="skeleton h-3 w-24 rounded" />
+                <div className="skeleton h-3 w-16 rounded mt-2" />
+              </div>
+            ) : (
+              <>
+                <p className="font-display font-bold text-2xl leading-none" style={{ color: 'var(--text)' }}>{value}</p>
+                <p className="text-xs font-medium mt-1" style={{ color: 'var(--text)' }}>{label}</p>
+                <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{sub}</p>
+              </>
+            )}
           </div>
         ))}
       </div>

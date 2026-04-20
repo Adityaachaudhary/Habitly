@@ -122,15 +122,20 @@ export default function SettingsPage() {
             { label: 'Daily check-in', sub: 'Morning reminder to track habits', defaultOn: false },
             { label: 'Weekly report', sub: 'Summary every Sunday', defaultOn: true },
           ].map(item => (
-            <div key={item.label} className="flex items-center justify-between">
+            <div key={item.label} className="flex items-center justify-between opacity-60">
               <div>
-                <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>{item.label}</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>{item.label}</p>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 font-bold uppercase tracking-wider" style={{ color: 'var(--muted)' }}>
+                    Coming Soon
+                  </span>
+                </div>
                 <p className="text-xs mt-0.5" style={{ color: 'var(--muted)' }}>{item.sub}</p>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" defaultChecked={item.defaultOn} className="sr-only peer" />
-                <div className="w-10 h-5 rounded-full peer-checked:bg-primary-500 transition-colors" style={{ background: 'var(--border)' }}>
-                  <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform peer-checked:translate-x-5" />
+              <label className="relative inline-flex items-center cursor-not-allowed">
+                <input type="checkbox" disabled defaultChecked={item.defaultOn} className="sr-only peer" />
+                <div className="w-10 h-5 rounded-full transition-colors" style={{ background: 'var(--border)' }}>
+                  <div className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform" />
                 </div>
               </label>
             </div>
