@@ -1,17 +1,18 @@
 import { useMemo, useState } from 'react'
 import { Navigate } from 'react-router-dom'
-import { Brain, FileText, MessageSquare } from 'lucide-react'
+import { Bot, Sparkles, BarChart3, AlertTriangle } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useHabits } from '../context/HabitsContext'
 import { useAIInsights } from '../hooks/useAIInsights'
 import { useHabitLogHistory } from '../hooks/useHabitLogHistory'
 import AICoach from '../components/AICoach'
 import AIInsightPanel from '../components/AIInsightPanel'
+import { cn } from '../utils/helpers'
 
 const TABS = [
-  { id: 'coach', label: '🤖 AI Coach', icon: <MessageSquare size={18} /> },
-  { id: 'insight', label: '✨ Daily Insight', icon: <Brain size={18} /> },
-  { id: 'report', label: '📊 Weekly Report', icon: <FileText size={18} /> },
+  { id: 'coach', label: 'AI Coach', icon: <Bot size={18} /> },
+  { id: 'insight', label: 'Daily Insight', icon: <Sparkles size={18} /> },
+  { id: 'report', label: 'Weekly Report', icon: <BarChart3 size={18} /> },
 ] as const
 
 type Tab = typeof TABS[number]['id']
@@ -50,12 +51,12 @@ export default function AICoachPage() {
 
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-6 animate-fade-in" style={{ background: 'var(--bg)' }}>
-      <div className="flex flex-col gap-1 mb-2">
-        <h1 className="font-display font-bold text-3xl" style={{ color: 'var(--text)' }}>
+      <div className="flex flex-col gap-2 mb-6">
+        <h1 className="font-serif italic text-5xl tracking-tight" style={{ color: 'var(--text)' }}>
           AI Habit Coach
         </h1>
-        <p className="text-sm" style={{ color: 'var(--muted)' }}>
-          Personalized guidance and insights powered by advanced AI.
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40" style={{ color: 'var(--muted)' }}>
+          Personalized guidance • Advanced Analysis
         </p>
       </div>
 
@@ -65,17 +66,20 @@ export default function AICoachPage() {
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className="flex items-center gap-2 px-6 py-4 text-sm font-medium transition-all relative whitespace-nowrap"
+              className="flex items-center gap-3 px-8 py-5 text-sm font-bold transition-all relative whitespace-nowrap uppercase tracking-widest"
               style={{
-                color: activeTab === t.id ? 'var(--primary-500)' : 'var(--muted)',
-                background: activeTab === t.id ? 'rgba(139,92,246,0.04)' : 'transparent',
+                color: activeTab === t.id ? 'var(--primary-600)' : 'var(--muted)',
+                background: activeTab === t.id ? 'rgba(var(--primary-600-rgb), 0.04)' : 'transparent',
               }}
             >
+              <div className={cn("transition-transform duration-300", activeTab === t.id && "scale-110")}>
+                {t.icon}
+              </div>
               {t.label}
               {activeTab === t.id && (
                 <span
-                  className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full"
-                  style={{ background: 'var(--primary-500)' }}
+                  className="absolute bottom-0 left-0 right-0 h-1 rounded-full"
+                  style={{ background: 'var(--primary-600)' }}
                 />
               )}
             </button>
@@ -133,7 +137,7 @@ export default function AICoachPage() {
 
               {weeklyReport.error && (
                 <div className="p-4 rounded-xl text-sm flex items-center gap-3 border shadow-sm" style={{ background: '#fef2f2', color: '#dc2626', borderColor: '#fecaca' }}>
-                  <span>⚠️</span> {weeklyReport.error}
+                  <AlertTriangle size={18} /> {weeklyReport.error}
                 </div>
               )}
 
@@ -147,7 +151,7 @@ export default function AICoachPage() {
                 >
                   <div className="flex items-start gap-4">
                     <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xl">📊</span>
+                      <BarChart3 size={20} className="text-blue-500" />
                     </div>
                     <div className="flex-1">
                       <p className="text-base leading-relaxed" style={{ color: 'var(--text)' }}>
@@ -155,7 +159,7 @@ export default function AICoachPage() {
                       </p>
                       {weeklyReport.generatedAt && (
                         <p className="text-xs mt-4" style={{ color: 'var(--muted)' }}>
-                          Last updated: {weeklyReport.generatedAt.toLocaleString('en-US', { 
+                          Last updated: {new Date(weeklyReport.generatedAt).toLocaleString('en-US', { 
                             weekday: 'long', month: 'short', day: 'numeric', 
                             hour: '2-digit', minute: '2-digit' 
                           })}
@@ -172,7 +176,7 @@ export default function AICoachPage() {
                   style={{ border: '2px dashed var(--border)', background: 'rgba(0,0,0,0.01)' }}
                 >
                   <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mb-4">
-                    <FileText size={32} style={{ color: 'var(--primary-500)' }} className="opacity-40" />
+                    <BarChart3 size={32} style={{ color: 'var(--primary-500)' }} className="opacity-40" />
                   </div>
                   <h3 className="font-semibold text-lg mb-1" style={{ color: 'var(--text)' }}>No report generated yet</h3>
                   <p className="text-sm max-w-sm" style={{ color: 'var(--muted)' }}>

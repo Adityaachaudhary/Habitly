@@ -3,18 +3,16 @@ import { X } from 'lucide-react'
 import type { Habit, HabitCategory, TimeLane } from '../types/index'
 import { TIME_LANE_LABELS, TIME_LANE_ORDER } from '../types/index'
 import { CATEGORIES, HABIT_COLORS } from '../types/index'
-import { cn } from '../utils/helpers'
+import { cn, getDaysInMonth } from '../utils/helpers'
 
 interface HabitFormProps {
   onSubmit: (data: Omit<Habit, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => Promise<void>
   onClose: () => void
   initial?: Partial<Habit>
   isEdit?: boolean
-  /** Other habits for “stack after” (caller excludes current habit when editing). */
-  stackAfterOptions?: { id: string; name: string }[]
 }
 
-export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAfterOptions = [] }: HabitFormProps) {
+export default function HabitForm({ onSubmit, onClose, initial, isEdit }: HabitFormProps) {
   const [loading, setLoading] = useState(false)
   const [form, setForm] = useState({
     name: initial?.name || '',
@@ -24,13 +22,13 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
     color: initial?.color || HABIT_COLORS[0],
     reminder_time: initial?.reminder_time || '',
     is_active: initial?.is_active ?? true,
-    stack_after_habit_id: initial?.stack_after_habit_id || '',
-    implementation_cue: initial?.implementation_cue || '',
-    implementation_context: initial?.implementation_context || '',
-    fallback_plan: initial?.fallback_plan || '',
     time_lane: (initial?.time_lane || 'any') as TimeLane,
     context_tag: initial?.context_tag || '',
+    goal_days: initial?.goal_days || 30,
   })
+
+  const now = new Date()
+  const daysInCurrentMonth = getDaysInMonth(now.getFullYear(), now.getMonth())
 
   useEffect(() => {
     // Trap scroll
@@ -48,10 +46,6 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
         name: form.name.trim(),
         description: form.description || null,
         reminder_time: form.reminder_time || null,
-        stack_after_habit_id: form.stack_after_habit_id || null,
-        implementation_cue: form.implementation_cue.trim() || null,
-        implementation_context: form.implementation_context.trim() || null,
-        fallback_plan: form.fallback_plan.trim() || null,
         time_lane: form.time_lane,
         context_tag: form.context_tag.trim() || null,
       })
@@ -124,19 +118,19 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
                   type="button"
                   onClick={() => setForm(f => ({ ...f, category: cat.label }))}
                   className={cn(
-                    'flex flex-col items-center gap-1 p-2 rounded-xl border-2 transition-all text-xs',
+                    'flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all duration-300',
                     form.category === cat.label
-                      ? 'border-current'
-                      : 'border-transparent'
+                      ? 'scale-[1.05]'
+                      : 'border-transparent opacity-60 hover:opacity-100 hover:bg-gray-50 dark:hover:bg-gray-800/50'
                   )}
                   style={{
                     background: form.category === cat.label ? cat.bg : 'var(--bg)',
                     color: form.category === cat.label ? cat.color : 'var(--muted)',
-                    borderColor: form.category === cat.label ? cat.color : undefined,
+                    borderColor: form.category === cat.label ? cat.color : 'transparent',
                   }}
                 >
-                  <span className="text-base">{cat.icon}</span>
-                  <span className="leading-tight text-center">{cat.label}</span>
+                  <cat.icon size={20} strokeWidth={form.category === cat.label ? 2.5 : 2} />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-center">{cat.label}</span>
                 </button>
               ))}
             </div>
@@ -246,97 +240,34 @@ export default function HabitForm({ onSubmit, onClose, initial, isEdit, stackAft
             </div>
           </div>
 
-          {/* Behavior design */}
-          <div
-            className="rounded-2xl border p-4 space-y-4"
-            style={{ borderColor: 'var(--border)', background: 'rgba(0,0,0,0.02)' }}
-          >
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-0.5" style={{ color: 'var(--muted)' }}>
-                Behavior design
-              </p>
-              <p className="text-[11px] leading-snug opacity-80" style={{ color: 'var(--muted)' }}>
-                Implementation intentions, habit stacking, and a minimum version when things slip.
-              </p>
-            </div>
 
-            {stackAfterOptions.length > 0 && (
-              <div>
-                <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                  Stack after (optional)
-                </label>
-                <select
-                  value={form.stack_after_habit_id}
-                  onChange={e =>
-                    setForm(f => ({
-                      ...f,
-                      stack_after_habit_id: e.target.value,
-                    }))
-                  }
-                  className="input"
+          
+          {/* Goal Duration */}
+          <div>
+            <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
+              Goal Duration
+            </label>
+            <div className="flex gap-2">
+              {[
+                { label: '7 Days', value: 7, sub: '(This Week)' },
+                { label: `${daysInCurrentMonth} Days`, value: daysInCurrentMonth, sub: '(This Month)' }
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setForm(f => ({ ...f, goal_days: opt.value }))}
+                  className={cn(
+                    'flex-1 p-3 rounded-xl border-2 text-left transition-all',
+                    form.goal_days === opt.value
+                      ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-400 text-primary-700 dark:text-primary-400'
+                      : 'border-transparent text-gray-500'
+                  )}
+                  style={{ background: form.goal_days === opt.value ? undefined : 'var(--bg)' }}
                 >
-                  <option value="">None — use cue below or neither</option>
-                  {stackAfterOptions.map(opt => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.name}
-                    </option>
-                  ))}
-                </select>
-                <p className="text-[10px] mt-1 opacity-70" style={{ color: 'var(--muted)' }}>
-                  Do this habit right after the one you pick. Order on the dashboard follows this chain.
-                </p>
-              </div>
-            )}
-
-            <div>
-              <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                After I… (cue, optional)
-              </label>
-              <input
-                type="text"
-                value={form.implementation_cue}
-                onChange={e => setForm(f => ({ ...f, implementation_cue: e.target.value }))}
-                className="input"
-                placeholder='e.g. I finish my coffee / I close my laptop'
-                maxLength={120}
-                disabled={!!form.stack_after_habit_id}
-              />
-              {form.stack_after_habit_id ? (
-                <p className="text-[10px] mt-1 opacity-70" style={{ color: 'var(--muted)' }}>
-                  Cue is implied by the stacked habit. Clear “Stack after” to use a free-form cue instead.
-                </p>
-              ) : null}
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                Where / when (optional)
-              </label>
-              <input
-                type="text"
-                value={form.implementation_context}
-                onChange={e => setForm(f => ({ ...f, implementation_context: e.target.value }))}
-                className="input"
-                placeholder="e.g. at my desk · before 9am"
-                maxLength={120}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold mb-1.5 uppercase tracking-wide" style={{ color: 'var(--muted)' }}>
-                Minimum version (fallback, optional)
-              </label>
-              <textarea
-                value={form.fallback_plan}
-                onChange={e => setForm(f => ({ ...f, fallback_plan: e.target.value }))}
-                className="input resize-none"
-                rows={2}
-                placeholder="e.g. Just 2 minutes — one paragraph / one stretch counts"
-                maxLength={280}
-              />
-              <p className="text-[10px] mt-1 opacity-70" style={{ color: 'var(--muted)' }}>
-                Shown when your streak is at zero but you have history — keeps the habit from feeling all-or-nothing.
-              </p>
+                  <div className="font-bold text-sm">{opt.label}</div>
+                  <div className="text-[10px] opacity-70 uppercase tracking-wider">{opt.sub}</div>
+                </button>
+              ))}
             </div>
           </div>
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Plus, CheckCircle2, Circle, TrendingUp } from 'lucide-react'
+import { Plus, CheckCircle2, Circle, TrendingUp, Flame, Sprout } from 'lucide-react'
 import { useHabits } from '../context/HabitsContext'
 import { useAuth } from '../context/AuthContext'
 import HabitCard from '../components/HabitCard'
@@ -10,7 +10,6 @@ import HabitForm from '../components/HabitForm'
 import type { Habit, HabitWithStreak, TimeLane } from '../types'
 import { TIME_LANE_LABELS, TIME_LANE_ORDER } from '../types'
 import { getGreeting } from '../utils/helpers'
-import { sortHabitsByStackOrder } from '../utils/behaviorDesign'
 import { useWeekReview } from '../context/WeekReviewContext'
 import { getWeekMondayIso, isEndOfWeekNudgeDay } from '../utils/weekReviewHelpers'
 
@@ -55,18 +54,12 @@ export default function DashboardPage() {
     }
   }
 
-  const habitNamesById = new Map(habits.map(h => [h.id, h.name]))
-
   const sortedHabits = (() => {
     const pending = habits.filter(h => !h.completed_today)
     const done = habits.filter(h => h.completed_today)
-    return [...sortHabitsByStackOrder(pending), ...sortHabitsByStackOrder(done)]
+    return [...pending, ...done]
   })()
 
-  const stackAfterOptions = habits.map(h => ({ id: h.id, name: h.name }))
-  const stackAfterOptionsForEdit = editingHabit
-    ? stackAfterOptions.filter(o => o.id !== editingHabit.id)
-    : stackAfterOptions
 
   const topStreaks = [...habits]
     .filter(h => (h.streak?.current_streak || 0) > 0)
@@ -82,9 +75,9 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-bold uppercase tracking-widest opacity-60 mb-1" style={{ color: 'var(--muted)' }}>{today}</p>
-          <h1 className="font-display font-extrabold text-4xl mt-0.5" style={{ color: 'var(--text)' }}>
-            {getGreeting()}, <span style={{ color: 'var(--primary-500)' }}>{user?.full_name?.split(' ')[0] || 'there'}</span> 👋
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 mb-1" style={{ color: 'var(--muted)' }}>{today}</p>
+          <h1 className="font-serif italic text-5xl mt-1 tracking-tight" style={{ color: 'var(--text)' }}>
+            {getGreeting()}, <span className="not-italic font-display font-black text-4xl ml-2" style={{ color: 'var(--primary-600)' }}>{user?.full_name?.split(' ')[0] || 'there'}</span>
           </h1>
         </div>
         <button onClick={() => setShowForm(true)} className="btn-primary flex-shrink-0 px-6 py-4 shadow-lg active:scale-95">
@@ -123,28 +116,35 @@ export default function DashboardPage() {
       )} */}
 
       {/* Today's progress card */}
-      <div className="glass-card p-8 relative overflow-hidden group">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-          <div>
-            <h2 className="font-display font-bold text-2xl mb-1.5" style={{ color: 'var(--text)' }}>Daily Overview</h2>
-            <p className="text-base font-medium opacity-70" style={{ color: 'var(--muted)' }}>
-              You've completed <span style={{ color: 'var(--primary-600)' }} className="font-bold">{completed}</span> of <span className="font-bold">{total}</span> habits today.
+      <div className="glass-card p-10 relative overflow-hidden group">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-10">
+          <div className="max-w-md">
+            <h2 className="font-display font-extrabold text-3xl mb-3 tracking-tighter" style={{ color: 'var(--text)' }}>Daily Progress</h2>
+            <p className="text-lg font-medium opacity-60 leading-relaxed" style={{ color: 'var(--muted)' }}>
+              You've completed <span style={{ color: 'var(--primary-600)' }} className="font-bold underline decoration-primary-200 underline-offset-4">{completed}</span> of <span className="font-bold text-text">{total}</span> habits today. Keep the momentum!
             </p>
           </div>
-          <div className="relative w-24 h-24 flex-shrink-0">
-            <svg viewBox="0 0 64 64" className="w-24 h-24 -rotate-90" style={{ filter: 'drop-shadow(0 0 12px rgba(var(--primary-500-rgb), 0.2))' }}>
-              <circle cx="32" cy="32" r="28" fill="none" strokeWidth="6" stroke="var(--border)" className="opacity-20" />
+          <div className="relative w-32 h-32 flex-shrink-0">
+            <svg viewBox="0 0 64 64" className="w-32 h-32 -rotate-90">
+              <defs>
+                <linearGradient id="progGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="var(--primary-400)" />
+                  <stop offset="100%" stopColor="var(--primary-600)" />
+                </linearGradient>
+              </defs>
+              <circle cx="32" cy="32" r="28" fill="none" strokeWidth="5" stroke="var(--border)" className="opacity-10" />
               <circle
-                cx="32" cy="32" r="28" fill="none" strokeWidth="6"
-                stroke="var(--primary-500)"
+                cx="32" cy="32" r="28" fill="none" strokeWidth="5"
+                stroke="url(#progGradient)"
                 strokeDasharray={`${2 * Math.PI * 28}`}
                 strokeDashoffset={`${2 * Math.PI * 28 * (1 - completionPct / 100)}`}
                 strokeLinecap="round"
-                style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+                className="drop-shadow-[0_0_8px_rgba(var(--primary-500-rgb),0.4)]"
+                style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <span className="font-display font-extrabold text-2xl" style={{ color: 'var(--text)' }}>{completionPct}%</span>
+              <span className="font-display font-black text-3xl" style={{ color: 'var(--text)' }}>{completionPct}%</span>
             </div>
           </div>
         </div>
@@ -187,14 +187,14 @@ export default function DashboardPage() {
       {/* Top streaks */}
       {topStreaks.length > 0 && (
         <section>
-          <h2 className="font-display font-bold text-xs mb-4 uppercase tracking-widest opacity-50" style={{ color: 'var(--muted)' }}>
-            🔥 Current Hot Streaks
+          <h2 className="font-display font-bold text-xs mb-4 uppercase tracking-widest opacity-50 flex items-center gap-2" style={{ color: 'var(--muted)' }}>
+            <Flame size={14} className="text-orange-500" /> Current Hot Streaks
           </h2>
           <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {topStreaks.map(h => (
               <div key={h.id} className="card p-4 flex-shrink-0 flex items-center gap-4 transition-shadow" style={{ minWidth: 200 }}>
                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shadow-inner" style={{ background: (h.color === '#22c55e' ? 'var(--primary-500)' : h.color) + '15' }}>
-                  🔥
+                  <Flame size={24} className="text-orange-500" />
                 </div>
                 <div>
                   <p className="font-bold text-sm truncate" style={{ color: 'var(--text)', maxWidth: 120 }}>{h.name}</p>
@@ -226,7 +226,9 @@ export default function DashboardPage() {
           </div>
         ) : total === 0 ? (
           <div className="card p-16 text-center">
-            <div className="text-6xl mb-6">🌱</div>
+            <div className="flex justify-center text-6xl mb-6 text-green-500 opacity-20">
+              <Sprout size={64} />
+            </div>
             <h3 className="font-display font-bold text-2xl mb-2" style={{ color: 'var(--text)' }}>
               Start your journey
             </h3>
@@ -255,11 +257,6 @@ export default function DashboardPage() {
                       <HabitCard
                         key={habit.id}
                         habit={habit}
-                        anchorHabitName={
-                          habit.stack_after_habit_id
-                            ? habitNamesById.get(habit.stack_after_habit_id)
-                            : undefined
-                        }
                         onToggle={toggleHabit}
                         onEdit={setEditingHabit}
                         onDelete={handleDelete}
@@ -278,7 +275,6 @@ export default function DashboardPage() {
         <HabitForm
           onSubmit={createHabit}
           onClose={() => setShowForm(false)}
-          stackAfterOptions={stackAfterOptions}
         />
       )}
       {editingHabit && (
@@ -287,7 +283,6 @@ export default function DashboardPage() {
           initial={editingHabit}
           onSubmit={handleEdit}
           onClose={() => setEditingHabit(null)}
-          stackAfterOptions={stackAfterOptionsForEdit}
         />
       )}
     </div>

@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import { MoreVertical, Pencil, Trash2, Check } from 'lucide-react'
+import { MoreVertical, Pencil, Trash2, Check, Flame, Moon } from 'lucide-react'
 import type { HabitWithStreak } from '../types'
+import { CATEGORIES } from '../types'
 import { cn } from '../utils/helpers'
-import { buildImplementationIntention, shouldShowFallbackCoach } from '../utils/behaviorDesign'
 
 interface HabitCardProps {
   habit: HabitWithStreak
-  /** Resolve stacked habit name; omit if unknown. */
-  anchorHabitName?: string | null
   onToggle: (id: string) => Promise<void>
   onEdit: (habit: HabitWithStreak) => void
   onDelete: (id: string) => Promise<void>
@@ -18,7 +16,7 @@ const resolveColor = (c: string) =>
     ? 'var(--primary-500)' 
     : c
 
-export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, onDelete }: HabitCardProps) {
+export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCardProps) {
   const displayColor = resolveColor(habit.color)
   const [toggling, setToggling] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -38,14 +36,7 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
 
   const streak = habit.streak?.current_streak || 0
   const longest = habit.streak?.longest_streak || 0
-  const streakProgress = Math.min((streak / 30) * 100, 100)
-
-  const anchorLabel =
-    habit.stack_after_habit_id
-      ? (anchorHabitName?.trim() || 'the habit I stack after')
-      : null
-  const intention = buildImplementationIntention(habit, anchorLabel)
-  const showFallback = shouldShowFallbackCoach(habit) && !habit.completed_today
+  const streakProgress = Math.min((streak / (habit.goal_days || 30)) * 100, 100)
 
   async function handleToggle() {
     if (toggling) return
@@ -71,13 +62,13 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
           <button
             onClick={handleToggle}
             disabled={toggling}
-            className={cn('habit-check w-10 h-10 border-2 rounded-2xl flex-shrink-0 transition-all active:scale-90', habit.completed_today && 'checked')}
-            style={habit.completed_today ? { background: displayColor, borderColor: displayColor } : { borderColor: 'var(--border)' }}
+            className={cn('w-12 h-12 border-2 rounded-2xl flex-shrink-0 transition-all duration-300 active:scale-90 flex items-center justify-center', habit.completed_today && 'checked')}
+            style={habit.completed_today ? { background: displayColor, borderColor: displayColor, boxShadow: `0 8px 20px -4px ${displayColor}60` } : { borderColor: 'var(--border)' }}
           >
             {habit.completed_today ? (
-              <Check size={20} className={cn('text-white', justChecked && 'animate-check-pop')} strokeWidth={4} />
+              <Check size={24} className={cn('text-white', justChecked && 'animate-check-pop')} strokeWidth={3.5} />
             ) : (
-              <span className="w-2 h-2 rounded-full opacity-20" style={{ background: displayColor }} />
+              <div className="w-1.5 h-1.5 rounded-full opacity-30" style={{ background: displayColor }} />
             )}
           </button>
 
@@ -92,7 +83,12 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
               {habit.name}
             </h3>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <span className="text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider" style={{ background: displayColor + '15', color: displayColor }}>
+              <span className="text-[10px] px-2 py-1 rounded-lg font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm" style={{ background: displayColor + '15', color: displayColor, border: `1px solid ${displayColor}20` }}>
+                {(() => {
+                  const cat = CATEGORIES.find(c => c.label === habit.category);
+                  if (cat) return <cat.icon size={12} strokeWidth={3} />;
+                  return null;
+                })()}
                 {habit.category}
               </span>
               {habit.context_tag?.trim() && (
@@ -104,21 +100,8 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
                 </span>
               )}
             </div>
-            {intention && (
-              <p
-                className="text-xs mt-2.5 leading-relaxed rounded-xl px-3 py-2 border"
-                style={{
-                  color: 'var(--text)',
-                  borderColor: displayColor + '35',
-                  background: displayColor + '0c',
-                }}
-              >
-                <span className="font-bold opacity-70 mr-1">Plan:</span>
-                {intention}
-              </p>
-            )}
+            </div>
           </div>
-        </div>
 
         {/* Menu */}
         <div className="relative" ref={menuRef}>
@@ -153,38 +136,33 @@ export default function HabitCard({ habit, anchorHabitName, onToggle, onEdit, on
       </div>
 
       {/* Progress bar */}
-      <div className="mb-6 space-y-2">
-        <div className="flex justify-between items-center px-1">
-          <span className="text-xs font-bold uppercase tracking-widest opacity-40" style={{ color: 'var(--muted)' }}>30-Day Goal</span>
-          <span className="font-display font-black text-sm" style={{ color: displayColor }}>{streak}/30</span>
+      <div className="mb-8 space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] opacity-40" style={{ color: 'var(--muted)' }}>
+            Goal: {habit.goal_days || 30} days
+          </span>
+          <span className="font-display font-black text-sm" style={{ color: displayColor }}>
+            {streak} <span className="opacity-40 text-[10px] uppercase ml-0.5">streak</span>
+          </span>
         </div>
-        <div className="w-full rounded-full h-2.5 overflow-hidden" style={{ background: 'rgba(0,0,0,0.04)' }}>
+        <div className="w-full rounded-full h-1.5 overflow-hidden" style={{ background: 'var(--border)', opacity: 0.3 }}>
           <div
             className="h-full rounded-full transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1)"
-            style={{ width: `${streakProgress}%`, background: `linear-gradient(90deg, ${displayColor}, #ffffff50)` }}
+            style={{ width: `${streakProgress}%`, background: displayColor }}
           />
         </div>
       </div>
 
-      {showFallback && habit.fallback_plan?.trim() && (
-        <div
-          className="mb-4 text-xs leading-relaxed rounded-2xl px-3 py-2.5 border-l-4"
-          style={{
-            borderColor: '#f59e0b',
-            background: 'rgba(245, 158, 11, 0.08)',
-            color: 'var(--text)',
-          }}
-        >
-          <span className="font-bold text-amber-700 dark:text-amber-400">Minimum version:</span>{' '}
-          <span className="opacity-90">{habit.fallback_plan.trim()}</span>
-        </div>
-      )}
 
       {/* Streak + best */}
       <div className="flex items-center justify-between p-3 rounded-2xl" style={{ background: habit.completed_today ? 'transparent' : 'rgba(0,0,0,0.02)' }}>
         <div className="flex items-center gap-2">
           <span className={cn('text-xl filter drop-shadow-sm', (streak > 0 && !habit.completed_today) && 'animate-pulse')}>
-            {streak > 0 ? '🔥' : '💤'}
+            {streak > 0 ? (
+              <Flame size={24} className="text-orange-500 fill-orange-500/20" />
+            ) : (
+              <Moon size={24} className="text-slate-400 fill-slate-400/10" />
+            )}
           </span>
           <div>
             <p className="font-display font-black text-xl leading-none" style={{ color: 'var(--text)' }}>

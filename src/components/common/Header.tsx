@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogOut, ChevronDown, Sun, Moon, Menu } from 'lucide-react'
+import { LogOut, ChevronDown, Sun, Moon, Menu, Sparkles } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useTheme } from '../../context/ThemeContext'
 import { cn } from '../../utils/helpers'
@@ -78,8 +78,9 @@ export default function Header({ onOpenMobileNav }: HeaderProps) {
               >
                 <div className="px-4 py-2 border-b mb-1" style={{ borderColor: 'var(--glass-border)' }}>
                   <p className="text-[10px] uppercase font-black tracking-widest opacity-50 mb-0.5" style={{ color: 'var(--muted)' }}>Account Status</p>
-                  <p className="text-[10px] font-black" style={{ color: user.is_premium ? '#f59e0b' : 'var(--text)' }}>
-                    {user.is_premium ? '✨ Premium Member' : 'Free Plan'}
+                  <p className="text-[10px] font-black flex items-center gap-1" style={{ color: user.is_premium ? '#f59e0b' : 'var(--text)' }}>
+                    {user.is_premium && <Sparkles size={10} />}
+                    {user.is_premium ? 'Premium Member' : 'Free Plan'}
                   </p>
                 </div>
                 

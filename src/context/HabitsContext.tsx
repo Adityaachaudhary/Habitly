@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import { supabase } from '../utils/supabase'
 import type { Habit, HabitLog, HabitStreak, HabitWithStreak } from '../types'
 import { getTodayString, localDateString } from '../utils/helpers'
-import { normalizeHabitBehaviorFields } from '../utils/behaviorDesign'
 import { useAuth } from './AuthContext'
 import { useToast } from './ToastContext'
 
@@ -50,7 +49,6 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
       if (isMock) {
         habitsData = getLocal<Habit>(STORAGE_HABITS)
-          .map((row: Habit) => normalizeHabitBehaviorFields(row as unknown as Record<string, unknown>) as Habit)
           .filter(h => h.user_id === user.id && h.is_active)
         logsData = getLocal<HabitLog>(STORAGE_LOGS).filter(l => l.user_id === user.id && l.log_date === today)
         streaksData = getLocal<HabitStreak>(STORAGE_STREAKS).filter(s => s.user_id === user.id)
@@ -64,7 +62,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
           .order('created_at', { ascending: true })
 
         if (habitsError) throw habitsError
-        habitsData = (hData || []).map((row: Habit) => normalizeHabitBehaviorFields(row) as Habit)
+        habitsData = hData || []
 
         // Fetch today's logs
         const { data: lData, error: logsError } = await supabase
@@ -180,11 +178,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     try {
       if (isMock) {
         const habits = getLocal<Habit>(STORAGE_HABITS)
-        const cleared = habits
-          .filter(h => h.id !== id)
-          .map(h =>
-            h.stack_after_habit_id === id ? { ...h, stack_after_habit_id: null as string | null } : h
-          )
+        const cleared = habits.filter(h => h.id !== id)
         saveLocal(STORAGE_HABITS, cleared)
         // Cleanup logs and streaks
         const logs = getLocal<HabitLog>(STORAGE_LOGS)
@@ -192,7 +186,6 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         const streaks = getLocal<HabitStreak>(STORAGE_STREAKS)
         saveLocal(STORAGE_STREAKS, streaks.filter(s => s.habit_id !== id))
       } else {
-        await supabase.from('habits').update({ stack_after_habit_id: null }).eq('stack_after_habit_id', id)
         const { error } = await supabase.from('habits').delete().eq('id', id)
         if (error) throw error
       }

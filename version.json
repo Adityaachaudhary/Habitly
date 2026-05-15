@@ -1,7 +1,6 @@
 [
   {
     "version": "1.0.3",
-    "date": "2026-04-15",
     "categories": {
       "fixes": [
         "Adjusted theme toggle alignment in Header. Moved inside a grouped flex container with Profile Dropdown to prevent shifting to the center on large screens.",
@@ -16,7 +15,6 @@
   },
   {
     "version": "1.0.4",
-    "date": "2026-04-16",
     "categories": {
       "fixes": [
         "Updated page title and SEO meta description in index.html for better brand visibility.",
@@ -32,7 +30,6 @@
   },
   {
     "version": "1.0.5",
-    "date": "2026-04-18",
     "categories": {
       "fixes": [
         "Ui fixes - removed hover effect from application, Homepage ui changes",
@@ -40,6 +37,33 @@
       ],
       "updates": [
         "Heatmap is replaced with circular progress bar in analytics page"
+      ]
+    }
+  },
+  {
+    "version": "1.0.6",
+    "categories": {
+      "fixes": [
+        ""
+      ],
+      "updates": [
+        "Toast componenet added for in app notifications",
+        "Ui-labels stated coming soon",
+        "Added loading state in Analytics page"
+      ]
+    }
+  },
+  {
+    "version": "1.0.7",
+    "categories": {
+      "fixes": [
+        "Fixed the all over ui of application to look more unique",
+        "Remove extra steps from habit creation steps",
+        "Replace emojis from FI icons library in whole application",
+        "Added calender heatmap in analytics page"
+      ],
+      "updates": [
+        ""
       ]
     }
   }

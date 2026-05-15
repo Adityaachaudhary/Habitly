@@ -1,0 +1,94 @@
+.compact-calendar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.habit-calendar {
+  width: 100% !important;
+  max-width: 320px;
+  background: transparent !important;
+  border: none !important;
+  font-family: inherit !important;
+}
+
+.habit-calendar .react-calendar__navigation {
+  margin-bottom: 1rem;
+}
+
+.habit-calendar .react-calendar__navigation button {
+  min-width: 32px;
+  background: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  border-radius: 8px;
+}
+
+.habit-calendar .react-calendar__navigation button:enabled:hover,
+.habit-calendar .react-calendar__navigation button:enabled:focus {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark .habit-calendar .react-calendar__navigation button:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.habit-calendar .react-calendar__month-view__weekdays {
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 0.6rem;
+  opacity: 0.4;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.habit-calendar .react-calendar__month-view__days__day--neighboringMonth {
+  opacity: 0.1 !important;
+}
+
+.habit-calendar .react-calendar__tile abbr {
+  display: none !important;
+}
+
+.habit-calendar .react-calendar__tile {
+  aspect-ratio: 1 / 1;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: none !important;
+  border-radius: 12px;
+  position: relative;
+}
+
+.habit-calendar .react-calendar__tile:enabled:hover,
+.habit-calendar .react-calendar__tile:enabled:focus {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+.dark .habit-calendar .react-calendar__tile:enabled:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.habit-calendar .react-calendar__tile--now {
+  background: rgba(var(--primary-500-rgb), 0.1) !important;
+}
+
+.habit-calendar .react-calendar__tile--active {
+  background: rgba(var(--primary-500-rgb), 0.1) !important;
+  color: var(--primary-600) !important;
+}
+
+.dark .habit-calendar .react-calendar__tile--active {
+  color: var(--primary-400) !important;
+}
+
+.react-calendar__month-view__days__day {
+  max-width: none !important;
+}
+
+abbr[title] {
+  text-decoration: none !important;
+}

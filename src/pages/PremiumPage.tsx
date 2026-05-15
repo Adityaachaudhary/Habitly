@@ -1,4 +1,4 @@
-import { Zap, Brain, BarChart2, Target, MessageSquare, FileText, Check, ArrowRight } from 'lucide-react'
+import { Zap, Brain, BarChart2, Target, MessageSquare, FileText, Check, ArrowRight, Sparkles, Bot } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
@@ -43,7 +43,7 @@ export default function PremiumPage() {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-base shadow-lg"
                 style={{ background: 'var(--primary-500)', color: 'white' }}
               >
-                <Check size={20} strokeWidth={3} /> You're on Premium ✨
+                <Check size={20} strokeWidth={3} /> You're on Premium <Sparkles size={20} className="fill-current" />
               </div>
               <Link 
                 to="/ai-coach" 
@@ -109,8 +109,8 @@ export default function PremiumPage() {
       {!canAccessAI && (
         <div className="card p-8 border-dashed border-2 relative overflow-hidden group" style={{ background: 'rgba(139, 92, 246, 0.02)', borderColor: 'rgba(139, 92, 246, 0.2)' }}>
           <div className="flex flex-col md:flex-row items-center gap-8 relative z-10">
-            <div className="w-20 h-20 rounded-full bg-violet-100 flex items-center justify-center text-3xl animate-bounce shadow-inner">
-              🤖
+            <div className="w-20 h-20 rounded-full bg-violet-100 flex items-center justify-center text-3xl animate-bounce shadow-inner text-violet-600">
+              <Bot size={48} />
             </div>
             <div className="flex-1 text-center md:text-left">
               <h3 className="font-display font-bold text-xl mb-2" style={{ color: 'var(--text)' }}>Ready to talk to your Coach?</h3>

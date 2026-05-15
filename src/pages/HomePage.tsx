@@ -93,14 +93,14 @@ export default function HomePage() {
         )}
         style={{ borderColor: scrolled ? 'var(--border)' : 'transparent' }}
       >
-        <div className="flex items-center gap-2.5 cursor-pointer">
+        <div className="flex items-center gap-3 group cursor-pointer">
           <div 
-            className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+            className="w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-3"
+            style={{ background: 'var(--primary-600)', boxShadow: '0 12px 20px -5px rgba(var(--primary-600-rgb), 0.4)' }}
           >
-            <span className="text-white font-bold text-lg">H</span>
+            <span className="text-white font-black italic text-xl">H</span>
           </div>
-          <span className="font-display font-bold text-xl tracking-tight hidden sm:block">Habitly</span>
+          <span className="font-display font-black text-2xl tracking-tighter hidden sm:block">Habitly<span className="text-primary-600">.</span></span>
         </div>
 
         <div className="hidden md:flex items-center gap-8 font-medium text-sm">
@@ -145,9 +145,9 @@ export default function HomePage() {
           {/* Text content */}
           <div className="flex-1 text-center lg:text-left space-y-8 animate-slide-up">
 
-            <h1 className="font-display font-black text-5xl md:text-7xl tracking-tight leading-[1.05]">
+            <h1 className="font-serif italic text-7xl md:text-[6rem] tracking-tight leading-[0.9] pt-4">
               Master your <br />
-              <span style={{ color: 'var(--primary-600)' }}>daily rhythms.</span>
+              <span className="not-italic font-display font-black text-5xl md:text-7xl block mt-2" style={{ color: 'var(--primary-600)' }}>daily rhythms.</span>
             </h1>
             <p className="text-lg md:text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed opacity-80" style={{ color: 'var(--muted)' }}>
               Habitly combines atomic tracking with AI-powered coaching to help you build rituals that actually stick. Join a community of intentional high-performers.
@@ -176,13 +176,21 @@ export default function HomePage() {
 
           {/* Hero Image */}
           <div className="flex-1 w-full max-w-2xl animate-fade-in relative">
+            <div className="absolute -inset-4 bg-primary-500/10 blur-3xl rounded-full opacity-50 pointer-events-none" />
             <img
               src="/landing_hero.png"
               alt="Habitly Dashboard"
-              className="relative rounded-3xl shadow-2xl border w-full object-cover"
+              className="relative rounded-[2.5rem] shadow-2xl border-2 w-full object-cover transform md:rotate-2 hover:rotate-0 transition-transform duration-700"
               style={{ borderColor: 'var(--border)' }}
             />
           </div>
+        </div>
+
+        {/* Dynamic Background Blobs */}
+        <div className="bg-blobs">
+          <div className="blob blob-1 opacity-20"></div>
+          <div className="blob blob-2 opacity-20"></div>
+          <div className="blob blob-3 opacity-20"></div>
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { User, Bell, Shield, Download, Trash2, Award } from 'lucide-react'
+import { User, Bell, Shield, Download, Trash2, Award, Sparkles, Sprout, Sun, Moon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useAchievements } from '../context/AchievementsContext'
 import { BADGE_DEFINITIONS } from '../types'
@@ -218,20 +218,22 @@ export default function SettingsPage() {
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all border"
             style={{ background: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text)' }}
           >
-            {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+            {theme === 'dark' ? <Sun size={14} /> : <Moon size={14} />}
+            {theme === 'dark' ? 'Light' : 'Dark'}
           </button>
         </div>
       ),
     },
     {
-      icon: <Download size={18} />, title: 'Data',
+      icon: <Download size={18} />, title: 'Data Management',
       content: (
-        <div className="space-y-3">
-          <p className="text-sm" style={{ color: 'var(--muted)' }}>
-            Export your habit data as a CSV file for backup or analysis.
+        <div className="space-y-4">
+          <p className="text-sm opacity-60 leading-relaxed" style={{ color: 'var(--muted)' }}>
+            Your data is your own. Export your habit logs as a CSV file for backup, spreadsheet analysis, or personal archiving.
           </p>
-          <button className="btn-ghost border" style={{ borderColor: 'var(--border)' }}>
-            <Download size={14} /> Export CSV
+          <button className="btn-ghost border px-6 py-3 rounded-xl flex items-center gap-3 transition-all hover:border-primary-400" style={{ borderColor: 'var(--border)' }}>
+            <Download size={16} strokeWidth={2.5} className="text-primary-600" /> 
+            <span className="font-bold text-sm tracking-tight">Export habit history (.csv)</span>
           </button>
         </div>
       ),
@@ -271,8 +273,8 @@ export default function SettingsPage() {
   return (
     <div className="flex-1 overflow-y-auto p-6 space-y-6 animate-fade-in">
       <div>
-        <h1 className="font-display font-bold text-2xl" style={{ color: 'var(--text)' }}>Settings</h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--muted)' }}>Manage your account and preferences</p>
+        <h1 className="font-serif italic text-5xl tracking-tight" style={{ color: 'var(--text)' }}>Settings</h1>
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] mt-2 opacity-40" style={{ color: 'var(--muted)' }}>Manage your account and preferences</p>
       </div>
       
       {isRecoveryMode && (
@@ -321,10 +323,16 @@ export default function SettingsPage() {
                 return (
                   <li
                     key={a.id}
-                    className="flex items-start gap-3 p-4 rounded-xl border"
+                    className="flex items-start gap-4 p-5 rounded-2xl border transition-all hover:shadow-md"
                     style={{ borderColor: 'var(--border)', background: 'rgba(0,0,0,0.02)' }}
                   >
-                    <span className="text-2xl flex-shrink-0">{def?.emoji ?? '🏅'}</span>
+                    <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: 'var(--card)', border: '1px solid var(--border)' }}>
+                      {def ? (
+                        <def.icon size={24} className="text-primary-600" strokeWidth={2.5} />
+                      ) : (
+                        <Award size={24} className="opacity-20" />
+                      )}
+                    </div>
                     <div className="min-w-0">
                       <p className="font-bold text-sm" style={{ color: 'var(--text)' }}>
                         {def?.label ?? a.badge_name}
@@ -364,13 +372,14 @@ export default function SettingsPage() {
         </div>
         <div className="ml-auto">
           <span
-            className="text-xs px-3 py-1 rounded-full font-semibold"
+            className="text-xs px-3 py-1 rounded-full font-semibold flex items-center gap-1"
             style={{
               background: user?.is_premium ? '#fffbeb' : 'var(--primary-50)',
               color: user?.is_premium ? '#d97706' : 'var(--primary-600)',
             }}
           >
-            {user?.is_premium ? '✨ Premium' : '🌱 Free'}
+            {user?.is_premium ? <Sparkles size={12} /> : <Sprout size={12} />}
+            {user?.is_premium ? 'Premium' : 'Free'}
           </span>
         </div>
       </div>
