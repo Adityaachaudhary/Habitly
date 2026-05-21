@@ -10,13 +10,13 @@ import HabitForm from '../components/HabitForm'
 import type { Habit, HabitWithStreak, TimeLane } from '../types'
 import { TIME_LANE_LABELS, TIME_LANE_ORDER } from '../types'
 import { getGreeting } from '../utils/helpers'
-import { useWeekReview } from '../context/WeekReviewContext'
-import { getWeekMondayIso, isEndOfWeekNudgeDay } from '../utils/weekReviewHelpers'
+// import { useWeekReview } from '../context/WeekReviewContext'
+// import { getWeekMondayIso } from '../utils/weekReviewHelpers'
 
 export default function DashboardPage() {
   const { user } = useAuth()
   const { habits, loading, createHabit, updateHabit, deleteHabit, toggleHabit } = useHabits()
-  const { loading: weekReviewLoading, getReviewForWeek } = useWeekReview()
+  // const { getReviewForWeek } = useWeekReview()
   const [showForm, setShowForm] = useState(false)
   const [editingHabit, setEditingHabit] = useState<HabitWithStreak | null>(null)
 
@@ -66,8 +66,8 @@ export default function DashboardPage() {
     .sort((a, b) => (b.streak?.current_streak || 0) - (a.streak?.current_streak || 0))
     .slice(0, 3)
 
-  const thisWeekMonday = getWeekMondayIso()
-  const hasWeekReview = Boolean(getReviewForWeek(thisWeekMonday))
+  // const thisWeekMonday = getWeekMondayIso()
+  // const hasWeekReview = Boolean(getReviewForWeek(thisWeekMonday))
   // const showWeekReviewNudge = !weekReviewLoading && !hasWeekReview && isEndOfWeekNudgeDay()
 
   return (

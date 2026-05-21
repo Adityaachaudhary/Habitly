@@ -2,11 +2,11 @@ import { useEffect, useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  PieChart, Pie, Cell, ResponsiveContainer,
+  PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar
 } from 'recharts'
 import { useHabits } from '../context/HabitsContext'
 import { useAuth } from '../context/AuthContext'
-import { getWeekDayLabel, calculateCompletionRate, localDateString, cn } from '../utils/helpers'
+import { calculateCompletionRate, localDateString, cn } from '../utils/helpers'
 import { fetchHabitLogsForUser } from '../utils/fetchHabitLogs'
 import { CATEGORIES } from '../types'
 import CalendarHeatmap from '../components/CalendarHeatmap'
@@ -21,11 +21,6 @@ const resolveColor = (c: string) =>
     ? 'var(--primary-500)'
     : c
 
-const CHART_COLORS = [
-  '#8b5cf6', '#6366f1', '#3b82f6', '#22c55e', '#eab308', '#f97316', '#ef4444',
-  '#ec4899', '#06b6d4', '#069281', '#460385', '#9530a4', '#277d47', '#475569',
-  '#94a3b8', '#8d0627', '#ea580c', '#ca8a04', '#65a30d', '#059669', '#0d9488'
-]
 
 export default function AnalyticsPage() {
   const { habits } = useHabits()
@@ -73,27 +68,6 @@ export default function AnalyticsPage() {
     return dates
   }, [range])
 
-  const multiHabitData = useMemo(() => {
-    return rangeDates.map(date => {
-      const point: Record<string, any> = { date, label: getWeekDayLabel(date) }
-      const currentDate = new Date(date)
-
-      habits.forEach(h => {
-        // Calculate rolling 7-day average
-        let completedInWindow = 0
-        for (let i = 0; i < 7; i++) {
-          const checkDate = new Date(currentDate)
-          checkDate.setDate(currentDate.getDate() - i)
-          const dateStr = localDateString(checkDate)
-          const log = logs.find(l => l.habit_id === h.id && l.log_date === dateStr)
-          if (log?.completed) completedInWindow++
-        }
-        point[h.id] = Math.round((completedInWindow / 7) * 100)
-      })
-      return point
-    })
-  }, [rangeDates, habits, logs])
-
   const trendData: DayData[] = useMemo(() => {
     return rangeDates.map(date => {
       const dayLogs = logs.filter(l => l.log_date === date)
@@ -101,7 +75,7 @@ export default function AnalyticsPage() {
         dayLogs.filter(l => l.completed).length,
         habits.length || 1
       )
-      return { date, rate, label: getWeekDayLabel(date) }
+      return { date, rate, label: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) }
     })
   }, [logs, habits, rangeDates])
 
@@ -319,83 +293,79 @@ export default function AnalyticsPage() {
               <p style={{ color: 'var(--muted)' }}>No habit data yet. Start checking in!</p>
             </div>
           ) : (
-            <>
-              <div className="card p-5">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h3 className="font-semibold text-sm" style={{ color: 'var(--text)' }}>Habit Strength Trends</h3>
-                    <p className="text-[10px] opacity-60" style={{ color: 'var(--muted)' }}>Rolling 7-day consistency average</p>
-                  </div>
-                </div>
+            <div className="flex flex-col gap-4">
+              {habits.map(h => {
+                const color = resolveColor(h.color)
+                const stat = habitStats.find(s => s.name === h.name)
+                const barData = rangeDates.map(date => {
+                  const log = logs.find(l => l.habit_id === h.id && l.log_date === date)
+                  return {
+                    date,
+                    label: new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                    done: log?.completed ? 1 : 0,
+                  }
+                })
+                const doneCount = barData.filter(d => d.done).length
 
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={multiHabitData} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-                    <XAxis
-                      dataKey="date"
-                      tick={{ fontSize: 10, fill: 'var(--muted)' }}
-                      tickFormatter={(v, i) => {
-                        const skip = range > 30 ? 10 : range > 14 ? 5 : 1
-                        return i % skip === 0 ? new Date(v).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : ''
-                      }}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 10, fill: 'var(--muted)' }}
-                      domain={[0, 100]}
-                      ticks={[0, 25, 50, 75, 100]}
-                      tickFormatter={v => `${v}%`}
-                    />
-                    <Tooltip
-                      contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, fontSize: 12, boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
-                      labelFormatter={l => new Date(l).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                      formatter={(value: number, name: string) => {
-                        return [`${value}% Strength`, name];
-                      }}
-                    />
-                    {habits.map((h, i) => {
-                      const color = CHART_COLORS[i % CHART_COLORS.length];
-
-                      return (
-                        <Line
-                          key={h.id}
-                          type="monotone"
-                          dataKey={h.id}
-                          name={h.name}
-                          stroke={color}
-                          strokeWidth={2.5}
-                          dot={false}
-                          activeDot={{ r: 5, strokeWidth: 0 }}
-                          connectNulls
-                        />
-                      )
-                    })}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {habitStats.map((h, i) => {
-                  // Use index to match the Line chart's VIBGYOR order
-                  const color = CHART_COLORS[i % CHART_COLORS.length];
-
-                  return (
-                    <div key={h.name} className="card p-4 flex items-center gap-4">
-                      <div className="w-2 self-stretch rounded-full flex-shrink-0" style={{ background: color }} />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate" style={{ color: 'var(--text)' }}>{h.name}</p>
-                        <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: 'var(--muted)' }}>
-                          <Flame size={12} style={{ color: 'var(--primary-500)' }} /> {h.streak}d streak
-                        </p>
+                return (
+                  <div key={h.id} className="card p-5 space-y-4">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
+                        <p className="font-semibold text-sm truncate" style={{ color: 'var(--text)' }}>{h.name}</p>
                       </div>
-                      <div className="text-right flex-shrink-0">
-                        <p className="font-bold text-lg" style={{ color: color }}>{h.rate}%</p>
-                        <p className="text-xs" style={{ color: 'var(--muted)' }}>completion</p>
+                      <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full flex-shrink-0" style={{ background: color + '20', color }}>
+                        {h.category}
+                      </span>
+                    </div>
+
+                    {/* Stats row */}
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="rounded-xl py-2" style={{ background: 'var(--border)' }}>
+                        <p className="font-black text-lg leading-none" style={{ color }}>{stat?.rate ?? 0}%</p>
+                        <p className="text-[9px] uppercase font-bold tracking-wider mt-1 opacity-50" style={{ color: 'var(--muted)' }}>Done</p>
+                      </div>
+                      <div className="rounded-xl py-2" style={{ background: 'var(--border)' }}>
+                        <p className="font-black text-lg leading-none" style={{ color: 'var(--text)' }}>{stat?.streak ?? 0}d</p>
+                        <p className="text-[9px] uppercase font-bold tracking-wider mt-1 opacity-50" style={{ color: 'var(--muted)' }}>Streak</p>
+                      </div>
+                      <div className="rounded-xl py-2" style={{ background: 'var(--border)' }}>
+                        <p className="font-black text-lg leading-none" style={{ color: 'var(--text)' }}>{doneCount}/{range}</p>
+                        <p className="text-[9px] uppercase font-bold tracking-wider mt-1 opacity-50" style={{ color: 'var(--muted)' }}>Days</p>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            </>
+
+                    {/* Bar chart */}
+                    <ResponsiveContainer width="100%" height={160}>
+                      <BarChart data={barData} margin={{ top: 0, right: 0, bottom: 30, left: 0 }} barCategoryGap="20%">
+                        <XAxis
+                          dataKey="label"
+                          tick={{ fontSize: 8, fill: 'var(--muted)' }}
+                          angle={-45}
+                          textAnchor="end"
+                          interval={0}
+                          axisLine={false}
+                          tickLine={false}
+                        />
+                        <Tooltip
+                          contentStyle={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 11 }}
+                          itemStyle={{ color: 'var(--text)' }}
+                          labelStyle={{ color: 'var(--text)' }}
+                          formatter={(v: any) => [v === 1 ? '✅ Completed' : '❌ Missed', '']}
+                          labelFormatter={(_, payload) => payload?.[0]?.payload?.label ?? ''}
+                        />
+                        <Bar dataKey="done" radius={[3, 3, 0, 0]}>
+                          {barData.map((entry, i) => (
+                            <Cell key={i} fill={entry.done ? color : 'var(--border)'} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                )
+              })}
+            </div>
           )}
         </div>
       )}

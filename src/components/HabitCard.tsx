@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import { MoreVertical, Pencil, Trash2, Check, Flame, Moon } from 'lucide-react'
 import type { HabitWithStreak } from '../types'
 import { CATEGORIES } from '../types'
@@ -32,8 +33,6 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
   }, [menuOpen])
-  const [justChecked, setJustChecked] = useState(false)
-
   const streak = habit.streak?.current_streak || 0
   const longest = habit.streak?.longest_streak || 0
   const streakProgress = Math.min((streak / (habit.goal_days || 30)) * 100, 100)
@@ -41,17 +40,20 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
   async function handleToggle() {
     if (toggling) return
     setToggling(true)
-    if (!habit.completed_today) setJustChecked(true)
     await onToggle(habit.id)
     setToggling(false)
-    setTimeout(() => setJustChecked(false), 800)
   }
 
   return (
-    <div
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)' }}
       className={cn(
-        'card p-6 relative transition-all duration-300 animate-slide-up group overflow-hidden',
-        habit.completed_today ? 'opacity-80 scale-[0.98]' : ''
+        'card p-6 relative transition-colors duration-300 group overflow-hidden',
+        habit.completed_today ? 'opacity-80' : ''
       )}
       style={{ borderLeft: `4px solid ${displayColor}`, background: habit.completed_today ? 'rgba(0,0,0,0.02)' : 'var(--card)' }}
     >
@@ -66,7 +68,13 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
             style={habit.completed_today ? { background: displayColor, borderColor: displayColor, boxShadow: `0 8px 20px -4px ${displayColor}60` } : { borderColor: 'var(--border)' }}
           >
             {habit.completed_today ? (
-              <Check size={24} className={cn('text-white', justChecked && 'animate-check-pop')} strokeWidth={3.5} />
+              <motion.div
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <Check size={24} className="text-white" strokeWidth={3.5} />
+              </motion.div>
             ) : (
               <div className="w-1.5 h-1.5 rounded-full opacity-30" style={{ background: displayColor }} />
             )}
@@ -184,6 +192,6 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
           style={{ background: `linear-gradient(135deg, ${displayColor}08, transparent)` }}
         />
       )}
-    </div>
+    </motion.div>
   )
 }

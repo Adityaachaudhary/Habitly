@@ -5,6 +5,7 @@ import {
 import { useTheme } from '../context/ThemeContext'
 import { Link } from 'react-router-dom'
 import AuthModal from '../components/common/AuthModal'
+import HeroAnimationWidget from '../components/HeroAnimationWidget'
 import { cn } from '../utils/helpers'
 
 const FEATURES = [
@@ -164,25 +165,12 @@ export default function HomePage() {
                 Watch Demo
               </button>
             </div>
-            <div className="flex items-center gap-4 justify-center lg:justify-start text-sm opacity-60">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="w-8 h-8 rounded-full border-2 bg-gray-200" style={{ borderColor: 'var(--bg)' }} />
-                ))}
-              </div>
-              <p>Trusted by <span className="font-bold">10,000+</span> users worldwide</p>
-            </div>
+
           </div>
 
-          {/* Hero Image */}
-          <div className="flex-1 w-full max-w-2xl animate-fade-in relative">
-            <div className="absolute -inset-4 bg-primary-500/10 blur-3xl rounded-full opacity-50 pointer-events-none" />
-            <img
-              src="/landing_hero.png"
-              alt="Habitly Dashboard"
-              className="relative rounded-[2.5rem] shadow-2xl border-2 w-full object-cover transform md:rotate-2 hover:rotate-0 transition-transform duration-700"
-              style={{ borderColor: 'var(--border)' }}
-            />
+          {/* Hero Animation Widget */}
+          <div className="flex-1 w-full max-w-2xl animate-fade-in relative z-10 flex items-center justify-center min-h-[400px]">
+            <HeroAnimationWidget />
           </div>
         </div>
 
@@ -296,8 +284,8 @@ export default function HomePage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <a href="#" className="p-2 transition-all"><Mail size={18} /></a>
-            <a href="#" className="p-2 transition-all"><Globe size={18} /></a>
+            <span className="p-2 opacity-40 cursor-not-allowed"><Mail size={18} /></span>
+            <span className="p-2 opacity-40 cursor-not-allowed"><Globe size={18} /></span>
           </div>
         </div>
         <p className="text-center text-xs opacity-40 mt-8">© 2026 Habitly. All rights reserved.</p>

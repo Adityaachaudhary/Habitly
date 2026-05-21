@@ -124,7 +124,7 @@ export const HABIT_COLORS = [
   '#8b5cf6', '#06b6d4', '#f59e0b', '#ef4444',
 ]
 
-export const BADGE_DEFINITIONS: Record<string, { icon: LucideIcon; label: string; description: string }> = {
+export const BADGE_DEFINITIONS: Record<string, { icon: LucideIcon; label: string; description: string; emoji?: string }> = {
   STREAK_7: { icon: Flame, label: 'Week Warrior', description: '7-day streak' },
   STREAK_14: { icon: Zap, label: 'Fortnight Fire', description: '14-day streak' },
   STREAK_30: { icon: Rocket, label: 'Month Master', description: '30-day streak' },

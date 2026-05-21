@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         setLoading(false)
       }
-    }).catch((e) => {
+    }).catch(() => {
       setLoading(false)
     })
 

@@ -66,5 +66,18 @@
         ""
       ]
     }
+  },
+  {
+    "version": "1.0.8",
+    "categories": {
+      "fixes": [
+        "Replace the UI of landing page with animations and better design",
+        "Replace emojis from FI icons library some more places in whole application"
+      ],
+      "updates": [
+        "Analytics page is updated with new design and better ui",
+        "Added bar graphs per habit in analytics page"
+      ]
+    }
   }
 ]
