@@ -145,7 +145,7 @@ export default function AICoachPage() {
                 <div
                   className="p-6 rounded-2xl animate-slide-up shadow-sm border"
                   style={{ 
-                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05))', 
+                    background: 'var(--primary-50)', 
                     borderColor: 'rgba(139, 92, 246, 0.2)' 
                   }}
                 >

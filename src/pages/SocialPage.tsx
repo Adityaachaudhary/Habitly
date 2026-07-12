@@ -53,8 +53,7 @@ export default function SocialPage() {
             className="px-6 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 uppercase tracking-widest"
             style={{
               background: tab === t.id ? 'var(--card)' : 'transparent',
-              color: tab === t.id ? 'var(--primary-600)' : 'var(--muted)',
-              boxShadow: tab === t.id ? '0 10px 15px -3px rgba(0,0,0,0.05)' : 'none',
+              color: tab === t.id ? 'var(--text)' : 'var(--muted)'
             }}
           >
             <t.Icon size={14} strokeWidth={2.5} />

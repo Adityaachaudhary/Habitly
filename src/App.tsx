@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { Target } from 'lucide-react'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { HabitsProvider } from './context/HabitsContext'
@@ -31,7 +32,7 @@ function LoadingScreen() {
     <div className="flex items-center justify-center h-screen" style={{ background: 'var(--bg)' }}>
       <div className="flex flex-col items-center gap-4">
         <div className="w-10 h-10 rounded-2xl bg-primary-500 flex items-center justify-center">
-          <span className="text-white font-bold text-lg">H</span>
+          <Target className="text-white" size={24} strokeWidth={2.5} />
         </div>
         <div className="flex gap-1.5">
           {[0, 1, 2].map(i => (

@@ -69,11 +69,10 @@ export default function Header({ onOpenMobileNav }: HeaderProps) {
             <>
               <div className="fixed inset-0 z-[101]" onClick={() => setShowMenu(false)} />
               <div 
-                className="absolute right-0 top-12 z-[102] w-48 glass-card py-2 shadow-2xl animate-bounce-in origin-top-right overflow-hidden border" 
+                className="absolute right-0 top-12 z-[102] w-48 py-2 overflow-hidden border" 
                 style={{ 
-                  borderColor: 'var(--glass-border)',
+                  borderColor: 'var(--border)',
                   background: 'var(--card)', // Opaque background from current theme
-                  boxShadow: '0 20px 50px rgba(0,0,0,0.2)'
                 }}
               >
                 <div className="px-4 py-2 border-b mb-1" style={{ borderColor: 'var(--glass-border)' }}>

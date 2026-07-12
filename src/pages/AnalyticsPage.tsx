@@ -169,8 +169,7 @@ export default function AnalyticsPage() {
               className="px-4 py-1.5 rounded-lg text-sm font-medium transition-all"
               style={{
                 background: activeTab === t.id ? 'var(--card)' : 'transparent',
-                color: activeTab === t.id ? 'var(--text)' : 'var(--muted)',
-                boxShadow: activeTab === t.id ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                color: activeTab === t.id ? 'var(--text)' : 'var(--muted)'
               }}
             >
               {t.label}

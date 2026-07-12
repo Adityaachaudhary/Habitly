@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, BarChart2, Settings,
-  ChevronLeft, ChevronRight
+  ChevronLeft, ChevronRight, Target
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../utils/helpers'
@@ -45,9 +45,8 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
         )}
         style={{
           width: collapsed ? '72px' : '224px',
-          background: 'var(--glass-bg)',
-          backdropFilter: 'blur(24px)',
-          borderRight: '1px solid var(--glass-border)',
+          background: 'var(--card)',
+          borderRight: '1px solid var(--border)',
           flexShrink: 0,
         }}
       >
@@ -63,9 +62,9 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
           <div className="flex items-center gap-3">
             <div 
               className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer transition-transform hover:rotate-3"
-              style={{ background: 'var(--primary-600)', boxShadow: '0 10px 20px -5px rgba(var(--primary-600-rgb), 0.4)' }}
+              style={{ background: 'var(--primary-600)' }}
             >
-              <span className="text-white text-xl font-black italic">H</span>
+              <Target className="text-white" size={24} strokeWidth={2.5} />
             </div>
             {!collapsed && (
               <span className="font-display font-black text-2xl tracking-tighter" style={{ color: 'var(--text)' }}>

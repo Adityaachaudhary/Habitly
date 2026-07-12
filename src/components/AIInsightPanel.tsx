@@ -18,7 +18,7 @@ export default function AIInsightPanel({ insight, onGenerate, isPremium = false 
   return (
     <div
       className="card p-5 relative overflow-hidden"
-      style={{ background: isPremium ? 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)' : 'var(--card)' }}
+      style={{ background: isPremium ? 'var(--primary-50)' : 'var(--card)' }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import {
-  Zap, BarChart2, Users, Brain, ChevronDown, Moon, Sun, Mail, Globe
+  Zap, BarChart2, Users, Brain, ChevronDown, Moon, Sun, Mail, Globe, Target
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 import { Link } from 'react-router-dom'
@@ -19,7 +19,7 @@ const FEATURES = [
   {
     icon: <Brain size={22} />,
     title: 'AI Habit Coach',
-    desc: 'Get personalized insights and streak recovery tips powered by Llama 3.3.',
+    desc: 'Get personalized insights and streak recovery tips from AI.',
     color: '#8b5cf6',
     comingSoon: true
   },
@@ -36,27 +36,6 @@ const FEATURES = [
     desc: 'Compete on global leaderboards and build habits together with friends.',
     color: '#f97316',
     comingSoon: true
-  }
-]
-
-const TESTIMONIALS = [
-  {
-    name: 'Sarah Chen',
-    role: 'Product Designer',
-    text: "Habitly's AI insights helped me realize why I was failing my morning routines. 30-day streak now!",
-    avatar: 'S'
-  },
-  {
-    name: 'Marcus Bell',
-    role: 'Fitness Coach',
-    text: "The cleanest UI I've seen in a habit tracker. My clients love the social leaderboard feature.",
-    avatar: 'M'
-  },
-  {
-    name: 'Elena Rossi',
-    role: 'Student',
-    text: "I used to forget everything. Now the daily reports keep me on track with my studies.",
-    avatar: 'E'
   }
 ]
 
@@ -97,15 +76,15 @@ export default function HomePage() {
         <div className="flex items-center gap-3 group cursor-pointer">
           <div 
             className="w-10 h-10 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-3"
-            style={{ background: 'var(--primary-600)', boxShadow: '0 12px 20px -5px rgba(var(--primary-600-rgb), 0.4)' }}
+            style={{ background: 'var(--primary-600)' }}
           >
-            <span className="text-white font-black italic text-xl">H</span>
+            <Target className="text-white" size={24} strokeWidth={2.5} />
           </div>
           <span className="font-display font-black text-2xl tracking-tighter hidden sm:block">Habitly<span className="text-primary-600">.</span></span>
         </div>
 
         <div className="hidden md:flex items-center gap-8 font-medium text-sm">
-          {['Features', 'Testimonials', 'FAQ'].map(item => (
+          {['Features', 'FAQ'].map(item => (
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
@@ -133,7 +112,6 @@ export default function HomePage() {
           <button
             onClick={() => openAuth('signup')}
             className="btn-primary px-5 py-2.5 text-sm active:scale-95"
-            style={{ boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
           >
             Join Free
           </button>
@@ -157,12 +135,8 @@ export default function HomePage() {
               <button
                 onClick={() => openAuth('signup')}
                 className="btn-primary px-8 py-4 text-lg w-full sm:w-auto transition-all"
-                style={{ boxShadow: '0 20px 25px -5px rgba(var(--primary-500-rgb), 0.3)' }}
               >
                 Get Started for Free
-              </button>
-              <button className="px-8 py-4 rounded-2xl border font-bold text-lg transition-all w-full sm:w-auto" style={{ borderColor: 'var(--border)' }}>
-                Watch Demo
               </button>
             </div>
 
@@ -216,36 +190,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="py-24 px-6">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="font-display font-black text-4xl">Built for momentum.</h2>
-            <p className="opacity-70" style={{ color: 'var(--muted)' }}>Hear from our global community of habit masters.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {TESTIMONIALS.map(({ name, role, text, avatar }) => (
-              <div key={name} className="glass-card p-8 space-y-6 flex flex-col justify-between">
-                <p className="text-lg italic opacity-90 leading-relaxed">"{text}"</p>
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 cursor-pointer"
-                    style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
-                  >
-                    <span className="text-white text-lg font-bold">{avatar}</span>
-                  </div>
-                  <div>
-                    <p className="font-bold">{name}</p>
-                    <p className="text-xs opacity-60 uppercase font-black tracking-widest">{role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* FAQ Section */}
       <section id="faq" className="py-24 px-6">
         <div className="max-w-3xl mx-auto space-y-12">
@@ -271,9 +215,9 @@ export default function HomePage() {
           <div className="flex items-center gap-2.5">
             <div 
               className="w-8 h-8 rounded-lg flex items-center justify-center"
-              style={{ background: 'var(--primary-500)', boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+              style={{ background: 'var(--primary-500)' }}
             >
-              <span className="text-white font-bold text-sm">H</span>
+              <Target className="text-white" size={20} strokeWidth={2.5} />
             </div>
             <span className="font-display font-bold text-lg tracking-tight">Habitly</span>
           </div>

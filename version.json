@@ -79,5 +79,19 @@
         "Added bar graphs per habit in analytics page"
       ]
     }
+  },
+   {
+    "version": "1.0.9",
+    "categories": {
+      "fixes": [
+        "Replace the UI of landing page with solid colors ",
+        "Removed AI generated look more human and unique design",
+        "Minimalize the habait creation form, removed extra steps",
+        "Removed testimonials section and watch demo btn from landing page"
+      ],
+      "updates": [
+        "Added client side Ui friction before signin/signup/forget passowrd proceses to introduce rate limiting and prevent bot attacks"
+      ]
+    }
   }
 ]

@@ -21,7 +21,7 @@ export default function PremiumPage() {
       {/* Hero banner */}
       <div
         className="card p-10 text-center relative overflow-hidden shadow-xl border-none"
-        style={{ background: 'linear-gradient(135deg, var(--primary-50) 0%, #eff6ff 50%, #f5f3ff 100%)' }}
+        style={{ background: 'var(--primary-50)' }}
       >
         <div className="relative z-10">
           <div

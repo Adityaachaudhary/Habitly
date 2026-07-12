@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { Eye, EyeOff, X } from 'lucide-react'
+import { isRateLimited, incrementRateLimit, clearRateLimit, formatTimeRemaining } from '../../utils/rateLimit'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -18,6 +19,23 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
   const [notice, setNotice] = useState('')
   const [showPw, setShowPw] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', password: '' })
+  const [lockoutTime, setLockoutTime] = useState<number>(0)
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    
+    function checkLockout() {
+      const { locked, timeRemainingMs } = isRateLimited('auth');
+      setLockoutTime(locked ? timeRemainingMs : 0);
+    }
+    
+    if (isOpen) {
+      checkLockout();
+      interval = setInterval(checkLockout, 1000);
+    }
+    
+    return () => clearInterval(interval);
+  }, [isOpen, mode]);
 
   if (!isOpen) return null
 
@@ -31,6 +49,12 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
     e.preventDefault()
     setError('')
     setNotice('')
+    
+    if (lockoutTime > 0) {
+      setError(`Too many attempts. Try again in ${formatTimeRemaining(lockoutTime)}`);
+      return;
+    }
+
     if (mode === 'forgot_password') {
       if (!form.email.trim()) {
         setError('Email is required')
@@ -41,7 +65,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
         await resetPassword(form.email)
         setNotice('Password reset email sent. Check your inbox and spam folder.')
       } catch (err: any) {
-        setError(err.message || 'Could not send reset email. Please try again.')
+        incrementRateLimit('auth');
+        const { locked, timeRemainingMs } = isRateLimited('auth');
+        if (locked) {
+          setLockoutTime(timeRemainingMs);
+          setError(`Too many attempts. Try again in ${formatTimeRemaining(timeRemainingMs)}`);
+        } else {
+          setError(err.message || 'Could not send reset email. Please try again.');
+        }
       } finally {
         setLoading(false)
       }
@@ -58,10 +89,18 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
       } else {
         await signIn(form.email, form.password)
       }
+      clearRateLimit('auth')
       onClose()
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Something went wrong. Please try again.')
+      incrementRateLimit('auth');
+      const { locked, timeRemainingMs } = isRateLimited('auth');
+      if (locked) {
+        setLockoutTime(timeRemainingMs);
+        setError(`Too many attempts. Try again in ${formatTimeRemaining(timeRemainingMs)}`);
+      } else {
+        setError(err.message || 'Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false)
     }
@@ -110,9 +149,8 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
                 onClick={() => { setMode(m); setError(''); setNotice('') }}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold capitalize transition-all"
                 style={{
-                  background: mode === m ? 'var(--bg)' : 'transparent',
-                  color: mode === m ? 'var(--text)' : 'var(--muted)',
-                  boxShadow: mode === m ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+                  background: mode === m ? 'var(--card)' : 'transparent',
+                  color: mode === m ? 'var(--text)' : 'var(--muted)'
                 }}
               >
                 {m === 'login' ? 'Sign in' : 'Sign up'}
@@ -211,13 +249,14 @@ export default function AuthModal({ isOpen, onClose, initialMode = 'login' }: Au
 
             <button 
               type="submit" 
-              disabled={loading} 
-              className="btn-primary w-full text-base py-3.5 mt-4 rounded-xl font-bold active:scale-95 transition-all"
-              style={{ boxShadow: '0 10px 15px -3px rgba(var(--primary-500-rgb), 0.2)' }}
+              disabled={loading || lockoutTime > 0} 
+              className="btn-primary w-full py-3.5 text-base mt-2"
             >
               {loading
                 ? 'Please wait...'
-                : mode === 'login'
+                : lockoutTime > 0
+                  ? `Locked (${formatTimeRemaining(lockoutTime)})`
+                  : mode === 'login'
                   ? 'Sign in to Habitly'
                   : mode === 'signup'
                     ? 'Create your Account'

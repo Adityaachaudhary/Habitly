@@ -49,7 +49,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
         <div className="flex items-center gap-3">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #8b5cf6, #ec4899)' }}
+            style={{ background: 'var(--primary-500)' }}
           >
             <Bot size={18} className="text-white" />
           </div>
@@ -74,7 +74,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
           <div className="flex flex-col items-center justify-center h-full text-center py-8 animate-fade-in">
             <div
               className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-              style={{ background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)' }}
+              style={{ background: 'var(--card)' }}
             >
               <MessageSquare size={28} style={{ color: '#8b5cf6' }} />
             </div>
@@ -103,7 +103,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
           <div key={i} className={cn('flex gap-3 animate-slide-up', msg.role === 'user' ? 'flex-row-reverse' : 'flex-row')}>
             <div
               className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-              style={{ background: msg.role === 'assistant' ? 'linear-gradient(135deg, #8b5cf6, #ec4899)' : 'var(--border)' }}
+              style={{ background: msg.role === 'assistant' ? 'var(--primary-500)' : 'var(--border)' }}
             >
               {msg.role === 'assistant'
                 ? <Bot size={14} className="text-white" />
@@ -130,7 +130,7 @@ export default function AICoach({ chatHistory, chatLoading, onSend, onClear }: A
           <div className="flex gap-3 animate-fade-in">
             <div
               className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #8b5cf6, #ec4899)' }}
+              style={{ background: 'var(--primary-500)' }}
             >
               <Bot size={14} className="text-white" />
             </div>

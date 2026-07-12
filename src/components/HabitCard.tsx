@@ -50,12 +50,8 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      whileHover={{ y: -4, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)' }}
-      className={cn(
-        'card p-6 relative transition-colors duration-300 group overflow-hidden',
-        habit.completed_today ? 'opacity-80' : ''
-      )}
-      style={{ borderLeft: `4px solid ${displayColor}`, background: habit.completed_today ? 'rgba(0,0,0,0.02)' : 'var(--card)' }}
+      className="card p-6 relative group overflow-hidden"
+      style={{ borderLeft: `4px solid ${displayColor}`, background: 'var(--card)' }}
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-6 gap-3">
@@ -64,8 +60,8 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
           <button
             onClick={handleToggle}
             disabled={toggling}
-            className={cn('w-12 h-12 border-2 rounded-2xl flex-shrink-0 transition-all duration-300 active:scale-90 flex items-center justify-center', habit.completed_today && 'checked')}
-            style={habit.completed_today ? { background: displayColor, borderColor: displayColor, boxShadow: `0 8px 20px -4px ${displayColor}60` } : { borderColor: 'var(--border)' }}
+            className={cn('w-12 h-12 border-2 rounded-xl flex-shrink-0 transition-all duration-300 active:scale-90 flex items-center justify-center z-10', habit.completed_today && 'checked')}
+            style={habit.completed_today ? { background: displayColor, borderColor: displayColor } : { borderColor: 'var(--border)' }}
           >
             {habit.completed_today ? (
               <motion.div
@@ -73,7 +69,7 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
               >
-                <Check size={24} className="text-white" strokeWidth={3.5} />
+                <Check size={20} className="text-white" strokeWidth={3.5} />
               </motion.div>
             ) : (
               <div className="w-1.5 h-1.5 rounded-full opacity-30" style={{ background: displayColor }} />
@@ -91,7 +87,7 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
               {habit.name}
             </h3>
             <div className="flex items-center gap-2 mt-1 flex-wrap">
-              <span className="text-[10px] px-2 py-1 rounded-lg font-black uppercase tracking-widest flex items-center gap-1.5 shadow-sm" style={{ background: displayColor + '15', color: displayColor, border: `1px solid ${displayColor}20` }}>
+              <span className="text-[10px] px-2 py-1 rounded-lg font-black uppercase tracking-widest flex items-center gap-1.5" style={{ color: displayColor }}>
                 {(() => {
                   const cat = CATEGORIES.find(c => c.label === habit.category);
                   if (cat) return <cat.icon size={12} strokeWidth={3} />;
@@ -101,8 +97,8 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
               </span>
               {habit.context_tag?.trim() && (
                 <span
-                  className="text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide"
-                  style={{ background: 'var(--border)', color: 'var(--muted)' }}
+                  className="text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide opacity-50"
+                  style={{ color: 'var(--text)' }}
                 >
                   {habit.context_tag.trim()}
                 </span>
@@ -122,7 +118,7 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
           </button>
           {menuOpen && (
             <div
-              className="absolute right-0 top-6 z-20 w-32 card shadow-hover py-1 animate-bounce-in"
+              className="absolute right-0 top-6 z-20 w-32 card shadow-hover py-1"
             >
               <button
                 onClick={() => { onEdit(habit); setMenuOpen(false) }}
@@ -144,18 +140,14 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
       </div>
 
       {/* Progress bar */}
-      <div className="mb-8 space-y-3">
-        <div className="flex justify-between items-center">
-          <span className="text-[10px] font-bold uppercase tracking-[0.15em] opacity-40" style={{ color: 'var(--muted)' }}>
-            Goal: {habit.goal_days || 30} days
-          </span>
-          <span className="font-display font-black text-sm" style={{ color: displayColor }}>
-            {streak} <span className="opacity-40 text-[10px] uppercase ml-0.5">streak</span>
-          </span>
+      <div className="mb-6 space-y-2">
+        <div className="flex justify-between items-center text-[10px] uppercase font-bold tracking-widest opacity-40">
+          <span>Progress</span>
+          <span>{streakProgress.toFixed(0)}%</span>
         </div>
-        <div className="w-full rounded-full h-1.5 overflow-hidden" style={{ background: 'var(--border)', opacity: 0.3 }}>
+        <div className="w-full rounded-full h-1 bg-gray-200">
           <div
-            className="h-full rounded-full transition-all duration-1000 cubic-bezier(0.34, 1.56, 0.64, 1)"
+            className="h-full rounded-full transition-all duration-1000"
             style={{ width: `${streakProgress}%`, background: displayColor }}
           />
         </div>
@@ -163,33 +155,31 @@ export default function HabitCard({ habit, onToggle, onEdit, onDelete }: HabitCa
 
 
       {/* Streak + best */}
-      <div className="flex items-center justify-between p-3 rounded-2xl" style={{ background: habit.completed_today ? 'transparent' : 'rgba(0,0,0,0.02)' }}>
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className={cn('text-xl filter drop-shadow-sm', (streak > 0 && !habit.completed_today) && 'animate-pulse')}>
+          <span className="text-xl">
             {streak > 0 ? (
-              <Flame size={24} className="text-orange-500 fill-orange-500/20" />
+              <Flame size={20} className="text-orange-500" />
             ) : (
-              <Moon size={24} className="text-slate-400 fill-slate-400/10" />
+              <Moon size={20} className="text-slate-400" />
             )}
           </span>
-          <div>
-            <p className="font-display font-black text-xl leading-none" style={{ color: 'var(--text)' }}>
-              {streak} <span className="text-xs font-bold uppercase tracking-wide opacity-50 ml-0.5">days</span>
-            </p>
-          </div>
+          <p className="font-display font-bold text-sm" style={{ color: 'var(--text)' }}>
+            {streak} <span className="opacity-40 font-normal">streak</span>
+          </p>
         </div>
         {longest > 0 && (
-          <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 text-right" style={{ color: 'var(--muted)' }}>
-            Best Streak <br /> <span className="text-sm font-black opacity-100" style={{ color: 'var(--text)' }}>{longest}d</span>
+          <div className="text-[10px] uppercase opacity-40 text-right font-medium">
+            Best {longest}d
           </div>
         )}
       </div>
 
       {/* Completed shimmer overlay */}
       {habit.completed_today && (
-        <div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{ background: `linear-gradient(135deg, ${displayColor}08, transparent)` }}
+        <div 
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{ background: `${displayColor}08` }}
         />
       )}
     </motion.div>

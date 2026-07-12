@@ -32,7 +32,7 @@ export default function BadgeUnlockToast({ item, onDismiss }: BadgeUnlockToastPr
         className="card p-4 shadow-2xl border flex gap-3 items-start"
         style={{
           borderColor: 'rgba(234, 179, 8, 0.45)',
-          background: 'linear-gradient(135deg, rgba(254, 243, 199, 0.95), var(--card))',
+          background: 'var(--card)',
         }}
       >
         <div
