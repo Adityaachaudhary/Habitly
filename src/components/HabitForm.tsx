@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import type { Habit, HabitCategory, TimeLane } from '../types/index'
-import { TIME_LANE_LABELS, TIME_LANE_ORDER } from '../types/index'
-import { CATEGORIES, HABIT_COLORS } from '../types/index'
+import { HABIT_COLORS } from '../types/index'
 import { cn, getDaysInMonth } from '../utils/helpers'
 
 interface HabitFormProps {
